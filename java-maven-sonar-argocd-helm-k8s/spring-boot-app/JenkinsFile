@@ -19,6 +19,7 @@ pipeline {
         sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
       }
     }
+
     stage('Static Code Analysis') {
       environment {
         SONAR_URL = "http://54.82.152.213:9000"
@@ -29,6 +30,7 @@ pipeline {
         }
       }
     }
+
     stage('Build and Push Docker Image') {
       environment {
         DOCKER_IMAGE = "khannashiv/ultimate-cicd:${BUILD_NUMBER}"
@@ -62,6 +64,8 @@ pipeline {
                 sh '''
                     pwd
                     ls -al
+                    cd $WORKSPACE
+                    ls -la $WORKSPACE
                     git config user.email "khannashiv94@gmail.com"
                     git config user.name "Shiv"
                     git status
