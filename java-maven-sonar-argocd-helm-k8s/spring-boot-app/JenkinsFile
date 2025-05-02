@@ -45,6 +45,13 @@ pipeline {
         }
       }
     }
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
     stage('Update Deployment File') {
         environment {
             GIT_REPO_NAME = "Jenkins-Practice"
@@ -53,8 +60,11 @@ pipeline {
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                 sh '''
+                    pwd
+                    ls -al
                     git config user.email "khannashiv94@gmail.com"
                     git config user.name "Shiv"
+                    git status
                     BUILD_NUMBER=${BUILD_NUMBER}
                     sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
                     git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
