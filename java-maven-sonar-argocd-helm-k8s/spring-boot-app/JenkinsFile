@@ -9,12 +9,19 @@ pipeline {
 
   stages {
 
-    // stage('Checkout') {
-    //   steps {
-    //     sh 'echo passed'
-    //     //git branch: 'main', url: 'https://github.com/iam-veeramalla/Jenkins-Zero-To-Hero.git'
-    //   }
-    // }
+    stage('Checkout') {
+    steps {
+        checkout([
+            $class: 'GitSCM',
+            branches: [[name: '*/main']], // or '*/master', adjust as needed
+            userRemoteConfigs: [[
+                url: 'https://github.com/khannashiv/Jenkins-Practice.git',
+                credentialsId: 'github' // use the ID of your GitHub PAT credentials
+            ]]
+        ])
+    }
+}
+
 
     stage('Build and Test') {
       steps {
