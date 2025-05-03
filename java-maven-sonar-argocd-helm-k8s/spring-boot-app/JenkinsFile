@@ -58,6 +58,16 @@ pipeline {
             }
         }
 
+    stage('Check Permissions on .git directory') {
+      steps {
+        sh '''
+        ls -la /var/lib/jenkins/workspace/Project-1/.git
+        ls -la /var/lib/jenkins/workspace/Project-1/.git/objects
+        chown -R jenkins:jenkins /var/lib/jenkins/workspace/Project-1/.git
+        '''
+      }
+    }
+
     stage('Update Deployment File') {
         environment {
             GIT_REPO_NAME = "Jenkins-Practice"
