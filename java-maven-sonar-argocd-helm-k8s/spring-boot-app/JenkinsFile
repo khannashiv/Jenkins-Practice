@@ -63,7 +63,7 @@ pipeline {
         sh '''
         ls -la /var/lib/jenkins/workspace/Project-1/.git
         ls -la /var/lib/jenkins/workspace/Project-1/.git/objects
-        chown -R jenkins:jenkins /var/lib/jenkins/workspace/Project-1/.git
+        chown -R 111:113 /var/lib/jenkins/workspace/Project-1/.git
         '''
       }
     }
