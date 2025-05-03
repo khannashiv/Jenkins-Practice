@@ -9,6 +9,7 @@ pipeline {
 
   options {
     skipDefaultCheckout(true) // Disable default SCM checkout to fix permission issues
+    buildDiscarder(logRotator(numToKeepStr: '10'))
   }
 
   stages {
