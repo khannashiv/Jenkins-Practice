@@ -19,7 +19,7 @@ pipeline {
           echo "Cleaning workspace and fixing permissions..."
           rm -rf ${WORKSPACE}/*
           mkdir -p ${WORKSPACE}
-          chown -R $(id -u):$(id -g) ${WORKSPACE}
+          chown -R 111:113 ${WORKSPACE}
         '''
       }
     }
