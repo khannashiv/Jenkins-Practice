@@ -61,8 +61,8 @@ pipeline {
     stage('Check Permissions on .git directory') {
       steps {
         sh '''
-        ls -la /var/lib/jenkins/workspace/Project-1/.git
-        ls -la /var/lib/jenkins/workspace/Project-1/.git/objects
+        ls -al /var/lib/jenkins/workspace/Project-1/.git
+        ls -al /var/lib/jenkins/workspace/Project-1/.git/objects
         chown -R 111:113 /var/lib/jenkins/workspace/Project-1/.git
         '''
       }
