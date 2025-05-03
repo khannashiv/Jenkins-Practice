@@ -1,103 +1,101 @@
 pipeline {
-
   agent {
     docker {
       image 'khannashiv/maven-shiv-docker-agent:v1'
-      args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
+      args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
     }
   }
 
-  stages {
+  environment {
+    SONAR_URL = "http://3.87.39.73:9000"
+    GIT_REPO_NAME = "Jenkins-Practice"
+    GIT_USER_NAME = "khannashiv"
+    DOCKER_IMAGE = "khannashiv/ultimate-cicd:${BUILD_NUMBER}"
+  }
 
+  stages {
+    
     stage('Checkout') {
       steps {
-          checkout([
-              $class: 'GitSCM',
-              branches: [[name: '*/main']], // or '*/master', adjust as needed
-              userRemoteConfigs: [[
-                  url: 'https://github.com/khannashiv/Jenkins-Practice.git',
-                  credentialsId: 'github' // use the ID of your GitHub PAT credentials
-              ]]
-            ])
+        checkout([
+          $class: 'GitSCM',
+          branches: [[name: '*/main']],
+          userRemoteConfigs: [[
+            url: 'https://github.com/khannashiv/Jenkins-Practice.git',
+            credentialsId: 'github'
+          ]]
+        ])
       }
     }
 
     stage('Build and Test') {
       steps {
-        sh 'ls -ltr'
-        // build the project and create a JAR file
         sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
       }
     }
 
     stage('Static Code Analysis') {
-      environment {
-        SONAR_URL = "http://3.87.39.73:9000"
-      }
       steps {
         withCredentials([string(credentialsId: 'sonarqube_token', variable: 'SONAR_AUTH_TOKEN')]) {
-          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
+          sh '''
+            cd java-maven-sonar-argocd-helm-k8s/spring-boot-app
+            mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}
+          '''
         }
       }
     }
 
     stage('Build and Push Docker Image') {
       environment {
-        DOCKER_IMAGE = "khannashiv/ultimate-cicd:${BUILD_NUMBER}"
-        // DOCKERFILE_LOCATION = "java-maven-sonar-argocd-helm-k8s/spring-boot-app/Dockerfile"
         REGISTRY_CREDENTIALS = credentials('docker-cred')
       }
       steps {
         script {
-            sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
-            def dockerImage = docker.image("${DOCKER_IMAGE}")
-            docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
-                dockerImage.push()
-            }
+          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
+          def dockerImage = docker.image("${DOCKER_IMAGE}")
+          docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
+            dockerImage.push()
+          }
         }
       }
     }
 
-    // stage('Checkout') {
-    //         steps {
-    //             checkout scm
-    //         }
-    //     }
-
-    stage('Check Permissions on .git directory') {
+    stage('Fix Git Permissions') {
       steps {
         sh '''
-        ls -al /var/lib/jenkins/workspace/Project-1/.git
-        ls -al /var/lib/jenkins/workspace/Project-1/.git/objects
-        chown -R 111:113 /var/lib/jenkins/workspace/Project-1/.git
+          echo "Fixing Git directory permissions"
+          chown -R $(id -u):$(id -g) $WORKSPACE/.git
         '''
       }
     }
 
     stage('Update Deployment File') {
-        environment {
-            GIT_REPO_NAME = "Jenkins-Practice"
-            GIT_USER_NAME = "khannashiv"
+      steps {
+        withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+          sh '''
+            export GIT_DIR=$WORKSPACE/.git
+            export GIT_WORK_TREE=$WORKSPACE
+
+            git config user.email "khannashiv94@gmail.com"
+            git config user.name "Shiv"
+
+            git checkout -B main
+
+            BUILD_NUMBER=${BUILD_NUMBER}
+            sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+
+            echo "Modified deployment.yml content:"
+            cat java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+
+            git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+
+            # Only commit if there are actual changes
+            git diff-index --quiet HEAD || git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+
+            git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} main
+          '''
         }
-        steps {
-            withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                sh '''
-                    pwd
-                    ls -al
-                    export GIT_DIR=$WORKSPACE/.git
-                    export GIT_WORK_TREE=$WORKSPACE
-                    git config user.email "khannashiv94@gmail.com"
-                    git config user.name "Shiv"
-                    git status
-                    BUILD_NUMBER=${BUILD_NUMBER}
-                    grep 'replaceImageTag' java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml || echo "No placeholder found!"
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git add java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-                '''
-            }
-        }
+      }
     }
   }
 }
