@@ -22,7 +22,6 @@ pipeline {
       }
     }
 
-
     stage('Build and Test') {
       steps {
         sh 'ls -ltr'
@@ -59,11 +58,11 @@ pipeline {
       }
     }
 
-    stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+    // stage('Checkout') {
+    //         steps {
+    //             checkout scm
+    //         }
+    //     }
 
     stage('Check Permissions on .git directory') {
       steps {
