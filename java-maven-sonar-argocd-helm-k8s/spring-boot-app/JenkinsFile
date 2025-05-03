@@ -1,5 +1,5 @@
 pipeline {
-  
+
   agent {
     docker {
       image 'khannashiv/maven-shiv-docker-agent:v1'
@@ -51,6 +51,12 @@ pipeline {
         }
       }
     }
+
+    stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
     stage('Update Deployment File') {
         environment {
