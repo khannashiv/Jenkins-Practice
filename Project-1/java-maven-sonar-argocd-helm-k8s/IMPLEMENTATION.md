@@ -25,8 +25,8 @@
      - **Repository URL**: `https://github.com/khannashiv/Jenkins-Practice`
      - **Branches to build**: Specify the branch name.
      - **Script Path**: Path to your `Jenkinsfile`.
-     - Added required plugins such as Git plugin, Docker pipeline, SonarQube Scanner used in this project.
-     - Configured credentials for Git, SOnarQube, Docker for authentication purposes.
+     - Added required plugins such as **Git plugin**, **Docker pipeline**, **SonarQube Scanner** used in this project.
+     - Configured credentials for **Git**, **SonarQube**, and **Docker** for authentication purposes.
 
     - ![](images/Jenkins-config-1.PNG "Jenkins-config-1")
     - ![](images/Jenkins-config-2.PNG "Jenkins-config-2")
