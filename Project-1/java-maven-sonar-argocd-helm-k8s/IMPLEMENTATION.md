@@ -353,8 +353,8 @@ What must be true for this stage to Work ?
    ```
 
  ![](images/Pipeline-stage-15.PNG "Pipeline-stage-15")
- ![](images/Pipeline-stage-10.PNG "Pipeline-stage-16")
- ![](images/Pipeline-stage-11.PNG "Pipeline-stage-17")
+ ![](images/Pipeline-stage-16.PNG "Pipeline-stage-16")
+ ![](images/Pipeline-stage-17.PNG "Pipeline-stage-17")
 
 <!-- Explanation of the 'Update Deployment File' stage .
  
