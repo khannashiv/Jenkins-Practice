@@ -174,3 +174,32 @@ This stage ensures a clean workspace by removing old files and resetting permiss
                 - This is mainly used for authenticated access to private repositories.
                 - This ID must match the one we've configured in Jenkins (e.g., personal access token or classic token).
 -->
+
+   ```groovy
+   stages {
+        stage('Build and Test') {
+            steps {
+        sh 'ls -ltr'
+        sh 'cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
+      }
+    }
+   }
+   ```
+   ![](images/Pipeline-stage-3.PNG "Pipeline-stage-3")
+   ![](images/Pipeline-stage-4.PNG "Pipeline-stage-4")
+
+   <!-- Explanation of the 'Explanation of the 'Build & Test' stage .
+
+    -- sh 'ls -ltr' : Lists all files and directories in the current Jenkins workspace directory .
+    -- sh 'cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
+        -- Changes into the following nested directory i.e. Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app
+        -- Then runs:
+                -- mvn clean: Deletes previously compiled files and the target directory (ensures a clean build).
+                -- mvn package: Compiles the code, runs unit tests, and packages the application into a .jar or .war, based on your pom.xml
+
+    Q :What Must Be true for this stage to Work ?
+    Sol : 
+        . The path Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app must exist in the Jenkins workspace (i.e., it was checked out correctly).
+        . Maven (mvn) must be installed and available in the environment or Docker container.
+        . The directory must contain a valid pom.xml.
+-->
