@@ -1,4 +1,3 @@
----
 
 ## Setting Up Jenkins
 1. **Install Jenkins**:
@@ -32,8 +31,6 @@
     - ![](images/Jenkins-config-3.PNG "Jenkins-config-3")
     - ![](images/Jenkins-config-4.PNG "Jenkins-config-4")
     - ![](images/Jenkins-config-5.PNG "Jenkins-config-5")
-
----
 
 ## Configuring the Pipeline
 - **Jenkinsfile**: Add the pipeline script in a file named `Jenkinsfile` at the root of the repository. Example:
