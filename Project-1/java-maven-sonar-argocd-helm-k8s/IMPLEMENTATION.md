@@ -28,7 +28,7 @@
 
     - ![](images/Jenkins-config-1.PNG "Jenkins-config-1")
     - ![](images/Jenkins-config-2.PNG "Jenkins-config-2")
-    - ![Jenkins-config-3](https://raw.githubusercontent.com/khannashiv/Jenkins-Practice/main/Project-1/java-maven-sonar-argocd-helm-k8s/images/Jenkins-config-3.PNG)
+    - ![](images/Jenkins-config-3.PNG "Jenkins-config-3")
     - ![](images/Jenkins-config-4.PNG "Jenkins-config-4")
     - ![](images/Jenkins-config-5.PNG "Jenkins-config-5")
 
