@@ -25,7 +25,7 @@
      - **Repository URL**: `https://github.com/khannashiv/Jenkins-Practice`
      - **Branches to build**: Specify the branch name.
      - **Script Path**: Path to your `Jenkinsfile`.
-     - - ![Alt text](images/Jenkins-config-1.PNG "Jenkins-config")
+     - ![Alt text](images/Jenkins-config-1.PNG "Jenkins-config")
 
 ---
 
