@@ -25,11 +25,12 @@
      - **Repository URL**: `https://github.com/khannashiv/Jenkins-Practice`
      - **Branches to build**: Specify the branch name.
      - **Script Path**: Path to your `Jenkinsfile`.
-     - ![Alt text](images/Jenkins-config-1.PNG "Jenkins-config-1")
-     - ![Alt text](images/Jenkins-config-2.PNG "Jenkins-config-2")
-     - ![Alt text](images/Jenkins-config-3.PNG "Jenkins-config-3")
-     - ![Alt text](images/Jenkins-config-4.PNG "Jenkins-config-4")
-     - ![Alt text](images/Jenkins-config-5.PNG "Jenkins-config-5")
+
+    - ![](images/Jenkins-config-1.PNG "Jenkins-config-1")
+    - ![](images/Jenkins-config-2.PNG "Jenkins-config-2")
+    - ![](images/Jenkins-config-3.PNG "Jenkins-config-3")
+    - ![](images/Jenkins-config-4.PNG "Jenkins-config-4")
+    - ![](images/Jenkins-config-5.PNG "Jenkins-config-5")
 
 ---
 
