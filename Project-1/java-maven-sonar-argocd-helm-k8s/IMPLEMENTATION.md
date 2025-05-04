@@ -225,7 +225,7 @@ This stage ensures a clean workspace by removing old files and resetting permiss
    ![](images/Pipeline-stage-7.PNG "Pipeline-stage-7")
    ![](images/Pipeline-stage-8.PNG "Pipeline-stage-8")
 
-<!-- Explanation of the 'Explanation of the 'Static Code Analysis' stage .
+<!-- Explanation of the 'Static Code Analysis' stage .
 
  -- stage('Static Code Analysis') : Defines a pipeline stage named "Static Code Analysis".
  -- environment { SONAR_URL = "http://3.87.39.73:9000" }
@@ -249,4 +249,76 @@ Assumptions for this stage to Work.
     .. Jenkins has the SonarQube token stored under the ID sonarqube_token.
     .. Maven and the sonar:sonar goal are available.
     .. The SonarQube server (http://3.87.39.73:9000) is reachable from Jenkins.
+-->
+
+  ```groovy
+   stages {
+
+        stage('Build and Push Docker Image') {
+            environment {
+                DOCKER_IMAGE = "khannashiv/ultimate-cicd:${BUILD_NUMBER}"
+                REGISTRY_CREDENTIALS = credentials('docker-cred')
+            }
+            steps {
+                script {
+                sh 'cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
+                def dockerImage = docker.image("${DOCKER_IMAGE}")
+                docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
+                    dockerImage.push()
+                }
+                }
+            }
+        }
+   }
+   ```
+
+ ![](images/Pipeline-stage-9.PNG "Pipeline-stage-9")
+ ![](images/Pipeline-stage-10.PNG "Pipeline-stage-10")
+ ![](images/Pipeline-stage-11.PNG "Pipeline-stage-11")
+ ![](images/Pipeline-stage-12.PNG "Pipeline-stage-12")
+ ![](images/Pipeline-stage-13.PNG "Pipeline-stage-13")
+ ![](images/Pipeline-stage-14.PNG "Pipeline-stage-14")
+
+   <!-- Explanation of the 'Build and Push Docker Image' stage .
+
+    -- This stage builds a Docker image from your Java app and pushes it to Docker Hub using credentials stored in Jenkins.
+    -- environment { ... }
+        Defines environment variables for this stage .
+            -- DOCKER_IMAGE = "khannashiv/ultimate-cicd:${BUILD_NUMBER}"
+            -- The Docker image name and tag.
+            -- Uses the current Jenkins build number as the tag (e.g., khannashiv/ultimate-cicd:44).
+            -- REGISTRY_CREDENTIALS = credentials('docker-cred')
+            -- Injects Docker Hub credentials stored in Jenkins under the ID docker-cred.
+    -- script { ... }
+        --  Build Docker image: sh 'cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
+            .. Changes into the app directory.
+            .. Runs Docker build using the Dockerfile there.
+            .. Tags the image as khannashiv/ultimate-cicd:<build_number>.
+        --  Prepare Docker image for push: def dockerImage = docker.image("${DOCKER_IMAGE}")
+            .. Creates a reference to the built Docker image in Jenkins Docker pipeline DSL.
+                .. Meaning of : def dockerImage = docker.image("${DOCKER_IMAGE}")
+                    This line tells Jenkins:
+                        -- “Hey, I have a Docker image called khannashiv/ultimate-cicd:<build number> (from the DOCKER_IMAGE variable).”
+                        -- “Save a reference to that image so I can do things with it later.This menas dockerImage will act as a”
+                        -- Think of it like saying: “This is the image I just built — remember it as dockerImage.”
+
+        -- Authenticate and push:
+            docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
+                                                    dockerImage.push()
+                                                }
+                .. Logs into Docker Hub using credentials ID docker-cred.
+                .. Pushes the image to the registry.
+                .. docker.withRegistry('https://index.docker.io/v1/', "docker-cred") { ... }
+                    .. This tells Jenkins : “Log in to Docker Hub using my saved credentials (docker-cred).”
+                .. dockerImage.push() : This tells Jenkins : “Take the image I just referenced (dockerImage) and push it to Docker Hub.”
+
+The login is temporary — it’s only used inside the { ... } block.
+
+What must be true for this stage to Work ?
+
+    .. Docker must be installed and running on the Jenkins agent.
+    .. Jenkins must have Docker credentials stored as ID docker-cred.
+    .. The Dockerfile must exist in the specified app directory.
+    .. Jenkins must be running as a user with permission to run Docker (docker.sock access, often via --user root in Docker agents).
+
 -->
