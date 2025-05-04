@@ -1,0 +1,14 @@
++ echo Updating deployment.yml with image tag 44
+Updating deployment.yml with image tag 44
++ export GIT_DIR=/var/lib/jenkins/workspace/Project-1/.git
++ export GIT_WORK_TREE=/var/lib/jenkins/workspace/Project-1
++ git config user.email khannashiv94@gmail.com
++ git config user.name Shiv
++ sed -i s/replaceImageTag/44/g Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
++ git add Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
++ git commit -m Update deployment image to version 44
+[detached HEAD 655227d] Update deployment image to version 44
+ 1 file changed, 1 insertion(+), 1 deletion(-)
++ git push https://****@github.com/khannashiv/Jenkins-Practice HEAD:main
+To https://github.com/khannashiv/Jenkins-Practice
+   6ad16ca..655227d  HEAD -> main

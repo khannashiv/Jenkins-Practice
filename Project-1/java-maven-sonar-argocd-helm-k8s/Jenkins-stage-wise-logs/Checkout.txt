@@ -1,0 +1,16 @@
+The recommended git tool is: NONE
+Warning: CredentialId "github" could not be found.
+Warning: JENKINS-30600: special launcher org.jenkinsci.plugins.docker.workflow.WithContainerStep$Decorator$1@676d347; decorates hudson.Launcher$LocalLauncher@8b13df9 will be ignored (a typical symptom is the Git executable not being run inside a designated container)
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Project-1/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/khannashiv/Jenkins-Practice.git # timeout=10
+Fetching upstream changes from https://github.com/khannashiv/Jenkins-Practice.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/khannashiv/Jenkins-Practice.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 6ad16ca155c97c97ea666b2db69e73627c7e6655 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 6ad16ca155c97c97ea666b2db69e73627c7e6655 # timeout=10
+Commit message: "Test"
+ > git rev-list --no-walk 8301342fb1fffaeedf94fd4c10a1a7eaab2b9489 # timeout=10

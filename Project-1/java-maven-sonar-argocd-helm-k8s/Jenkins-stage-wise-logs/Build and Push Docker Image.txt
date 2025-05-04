@@ -1,0 +1,37 @@
++ cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app
++ docker build -t khannashiv/ultimate-cicd:44 .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  19.11MB
+Step 1/5 : FROM adoptopenjdk/openjdk11:alpine-jre
+ ---> ebcbb47fa764
+Step 2/5 : ARG artifact=target/spring-boot-web.jar
+ ---> Using cache
+ ---> 2883a8841d08
+Step 3/5 : WORKDIR /opt/app
+ ---> Using cache
+ ---> 583704a7500f
+Step 4/5 : COPY ${artifact} app.jar
+ ---> 840abba62bcd
+Step 5/5 : ENTRYPOINT ["java","-jar","app.jar"]
+ ---> Running in cca53bc2c898
+ ---> Removed intermediate container cca53bc2c898
+ ---> 0b3559633632
+Successfully built 0b3559633632
+Successfully tagged khannashiv/ultimate-cicd:44
++ docker tag khannashiv/ultimate-cicd:44 index.docker.io/khannashiv/ultimate-cicd:44
++ docker push index.docker.io/khannashiv/ultimate-cicd:44
+The push refers to repository [docker.io/khannashiv/ultimate-cicd]
+cd8872c2825a: Preparing
+0659147dadc2: Preparing
+09b3cc96a0fa: Preparing
+be8166d6fc12: Preparing
+9733ccc39513: Preparing
+0659147dadc2: Layer already exists
+09b3cc96a0fa: Layer already exists
+be8166d6fc12: Layer already exists
+9733ccc39513: Layer already exists
+cd8872c2825a: Pushed
+44: digest: sha256:85f5744f5652e8cf3c66bb826147945af70cd2e34720f95df607bee7f10a3750 size: 1370
