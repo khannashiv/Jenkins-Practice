@@ -397,3 +397,5 @@ Summary for this stage .
         -- Commits and pushes that change to GitHub automatically.
         -- This is essential for GitOps workflows, where you want your Git repo to be the single source of truth for deployments.
 -->
+
+## Here we have completed out CI part from implementation prospective .
