@@ -120,4 +120,22 @@ Prerequisites for this to Work .
 <!-- Explanation of the 'Clean Workspace & Fix Permissions' stage:
 
 This stage ensures a clean workspace by removing old files and resetting permissions to avoid conflicts in subsequent stages.
+- echo "Cleaning workspace and fixing permissions..."
+    . Prints a message to the Jenkins console log for visibility.
+- rm -rf ${WORKSPACE}/*
+    . Deletes everything inside the Jenkins workspace directory.
+- ${WORKSPACE} is a built-in Jenkins environment variable pointing to the job’s working directory. In this case path of this env variable is : /var/lib/jenkins/workspace/Project-1 ( Refer snap for this stage .)
+- rf means:
+    r: recursive (delete directories and contents)
+    f: force (ignore non-existent files, don’t prompt)
+- mkdir -p ${WORKSPACE}
+    . Recreates the workspace directory if needed.
+    . -p ensures no error is thrown if it already exists.
+- chown -R 111:113 ${WORKSPACE}
+    . Changes the ownership of the workspace directory to user ID 111 and group ID 113.
+    . -R: recursive, applies to all files and subdirectories.
+- Purpose of this Stage:
+        -- Ensures a clean build environment.
+        -- Resolves file permission issues, especially in Docker-based builds where user IDs in the container and host differ.
+        -- Prevents problems from leftover files of previous builds.
 -->
