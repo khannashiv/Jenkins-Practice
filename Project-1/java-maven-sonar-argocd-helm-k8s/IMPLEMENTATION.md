@@ -33,7 +33,9 @@
     - ![](images/Jenkins-config-5.PNG "Jenkins-config-5")
 
 ## Configuring the Pipeline
-- **Jenkinsfile**: Add the pipeline script in a file named `Jenkinsfile` at the root of the repository. Example:
+
+- **Jenkinsfile**: Add the pipeline script in a file named `JenkinsFile` at the git repository whose absolute path is Jenkins-Practice/Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app/JenkinsFile. Below we are explaining each code block which is part of Jenkins pipeine.
+
    ```groovy
    pipeline {
 
@@ -54,6 +56,7 @@
 - `args`: Provides additional arguments to the Docker container:
   - `--user root`: Runs the container as the root user.
   - `-v /var/run/docker.sock:/var/run/docker.sock`: Mounts the host's Docker socket into the container, allowing Docker commands inside the container to interact with the host's Docker daemon.
+
 -->
 
    ```groovy
@@ -84,7 +87,8 @@
        }
    }
    ```
-
+    - ![](images/Pipeline-stage-1.PNG "Pipeline-stage-1")
+    
 <!-- Explanation of the 'Clean Workspace & Fix Permissions' stage:
 
 This stage ensures a clean workspace by removing old files and resetting permissions to avoid conflicts in subsequent stages.
