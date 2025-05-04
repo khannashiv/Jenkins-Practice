@@ -46,28 +46,31 @@
         args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
+    ```
 
 <!-- Meaning of agent block mentioned above.
 
 agent: This directive tells Jenkins where and how to run the pipeline or stage. In this case, it's specifying to use a Docker container as the build environment.
 
-    docker: This subdirective under agent specifies that the build should run inside a Docker container.
+docker: This subdirective under agent specifies that the build should run inside a Docker container.
 
-    image 'khannashiv/maven-shiv-docker-agent:v1': This tells Jenkins to use the Docker image khannashiv/maven-shiv-docker-agent with tag v1 as the container for running the pipeline.
+image 'khannashiv/maven-shiv-docker-agent:v1': This tells Jenkins to use the Docker image khannashiv/maven-shiv-docker-agent with tag v1 as the container for running the pipeline.
 
-    args '--user root -v /var/run/docker.sock:/var/run/docker.sock':
+args '--user root -v /var/run/docker.sock:/var/run/docker.sock':
 
-        These are additional Docker run arguments:
-            --user root: Runs the container as the root user. This is often necessary if you need elevated permissions in the container.
-            -v /var/run/docker.sock:/var/run/docker.sock: Mounts the host's Docker socket into the container, allowing Docker commands (e.g., building images, running containers) inside the Jenkins container to communicate with the host's Docker daemon. 
+    These are additional Docker run arguments:
+        --user root: Runs the container as the root user. This is often necessary if you need elevated permissions in the container.
+        -v /var/run/docker.sock:/var/run/docker.sock: Mounts the host's Docker socket into the container, allowing Docker commands (e.g., building images, running containers) inside the Jenkins container to communicate with the host's Docker daemon. 
 -->
 
+   ```groovy
     options {
         skipDefaultCheckout(true) // Disable default SCM checkout to fix permission issues
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
+    ```
 
-<!--  Meaning of options block mentioned above.
+<!-- Meaning of options block mentioned above.
 
 1. skipDefaultCheckout(true)
     Purpose: Prevents Jenkins from automatically checking out the source code from your Source Control Management (SCM) (like Git) at the start of the pipeline.
@@ -92,6 +95,7 @@ What it does:
 This options block overall disables the default source code checkout and configures Jenkins to keep only the last 10 builds, helping with permission handling and disk space management.
 -->
 
+   ```groovy
     stages {
 
         stage('Clean Workspace & Fix Permissions') {
@@ -104,9 +108,11 @@ This options block overall disables the default source code checkout and configu
             '''
             }
         }
+    ```
 
-        <!-- The above stage ensures a clean workspace and fixes permissions to avoid permission-related issues in subsequent stages. -->
+<!-- The above stage ensures a clean workspace and fixes permissions to avoid permission-related issues in subsequent stages. -->
 
+   ```groovy
         stage('Checkout') {
         steps {
             checkout([
@@ -119,18 +125,22 @@ This options block overall disables the default source code checkout and configu
             ])
             }
         }
+    ```
 
-        <!-- This stage checks out the code from the Git repository using the specified branch and credentials. -->
+<!-- This stage checks out the code from the Git repository using the specified branch and credentials. -->
 
+   ```groovy
         stage('Build and Test') {
         steps {
             sh 'ls -ltr'
             sh 'cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
         }
         }
+    ```
 
-        <!-- This stage builds the Maven project and runs all the tests. -->
+<!-- This stage builds the Maven project and runs all the tests. -->
 
+   ```groovy
         stage('Static Code Analysis') {
         environment {
             SONAR_URL = "http://52.90.245.58:9000"
@@ -141,9 +151,11 @@ This options block overall disables the default source code checkout and configu
             }
         }
         }
+    ```
 
-        <!-- This stage performs static code analysis using SonarQube. -->
+<!-- This stage performs static code analysis using SonarQube. -->
 
+   ```groovy
         stage('Build and Push Docker Image') {
         environment {
             DOCKER_IMAGE = "khannashiv/ultimate-cicd:${BUILD_NUMBER}"
@@ -159,9 +171,11 @@ This options block overall disables the default source code checkout and configu
             }
         }
         }
+    ```
 
-        <!-- This stage builds a Docker image and pushes it to Docker Hub using the provided credentials. -->
+<!-- This stage builds a Docker image and pushes it to Docker Hub using the provided credentials. -->
 
+   ```groovy
         stage('Update Deployment File') {
         environment {
             GIT_REPO_NAME = "Jenkins-Practice"
@@ -184,8 +198,9 @@ This options block overall disables the default source code checkout and configu
             '''
             }
         }
-    }
-    
-    <!-- This stage updates the deployment file to reference the new Docker image version and pushes it to the Git repository. -->
+        }
+    ```
+
+<!-- This stage updates the deployment file to reference the new Docker image version and pushes it to the Git repository. -->
 
 }
