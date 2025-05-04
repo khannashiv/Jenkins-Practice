@@ -213,7 +213,7 @@ This stage ensures a clean workspace by removing old files and resetting permiss
         }
             steps {
                 withCredentials([string(credentialsId: 'sonarqube_token', variable: 'SONAR_AUTH_TOKEN')]) {
-                sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
+                sh 'cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
                 }
             }
     }
@@ -225,4 +225,28 @@ This stage ensures a clean workspace by removing old files and resetting permiss
    ![](images/Pipeline-stage-7.PNG "Pipeline-stage-7")
    ![](images/Pipeline-stage-8.PNG "Pipeline-stage-8")
 
-   
+<!-- Explanation of the 'Explanation of the 'Static Code Analysis' stage .
+
+ -- stage('Static Code Analysis') : Defines a pipeline stage named "Static Code Analysis".
+ -- environment { SONAR_URL = "http://3.87.39.73:9000" }
+    -- Sets a stage-level environment variable named SONAR_URL.
+    -- This is the URL where your SonarQube server is running.
+    -- In this case: http://3.87.39.73:9000 (likely an EC2 instance or similar).
+-- withCredentials([string(...)])
+    -- Securely injects a SonarQube authentication token into the environment.
+    -- credentialsId: 'sonarqube_token': Refers to a secret string stored in Jenkins Credentials.
+    -- variable: 'SONAR_AUTH_TOKEN': The environment variable Jenkins will use inside the block.
+-- Shell Commands :
+    -- cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && \
+    -- mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}
+         # Changes into the Spring Boot app directory.
+         # Runs a Maven command to trigger SonarQube analysis with:
+            -Dsonar.login=$SONAR_AUTH_TOKEN: uses the secure token for authentication.
+            -Dsonar.host.url=${SONAR_URL}: tells Maven where to send analysis results.
+
+Assumptions for this stage to Work.
+    .. The project has a valid pom.xml with SonarQube plugin configured.
+    .. Jenkins has the SonarQube token stored under the ID sonarqube_token.
+    .. Maven and the sonar:sonar goal are available.
+    .. The SonarQube server (http://3.87.39.73:9000) is reachable from Jenkins.
+-->
