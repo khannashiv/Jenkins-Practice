@@ -64,6 +64,27 @@
 
 - Summary of this code block
     - This pipeline block configures Jenkins to run all build steps inside a custom Docker container with root access and Docker control, which is useful for Maven-based projects that also need to build or run Docker images.
+
+Q: How Jenkins Gets the Docker Image ?
+
+Sol :
+1. Jenkins uses the local Docker engine on the agent node (where the pipeline runs).The Docker agent is required on that node for this to work.
+
+2.Image Lookup and Pulling.
+    -- Jenkins instructs Docker to run the image khannashiv/maven-shiv-docker-agent:v1.
+    -- Docker checks if that image is already present locally.
+    -- If the image is not found locally, Docker will:
+        . Attempt to pull it from Docker Hub (since no private registry or credentials were specified).
+        . This assumes khannashiv/maven-shiv-docker-agent:v1 is publicly available on Docker Hub.
+3. Execution
+    -- Once the image is pulled (or found locally), Docker spins up a container using that image.
+    -- Jenkins executes all pipeline steps inside that container, with root access and the host’s Docker socket mounted.
+
+Prerequisites for this to Work .
+    The Jenkins agent must:
+        . Have Docker installed and running.
+        . Be able to pull images from Docker Hub.
+        . Have permissions to run Docker containers (Jenkins user is often part of the docker group).
 -->
 
    ```groovy
