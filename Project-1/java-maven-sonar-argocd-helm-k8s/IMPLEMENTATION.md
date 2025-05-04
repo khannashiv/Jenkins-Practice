@@ -16,6 +16,7 @@
 3. **Create a New Pipeline**:
    - Click on "New Item" on the Jenkins home page.
    - Select "Pipeline" as the project type.
+   - ![Alt text](iamges/Jenkins-config-1.PNG "Jenkins-config")
 
 4. **Configure the Pipeline**:
    - Add a general description.
