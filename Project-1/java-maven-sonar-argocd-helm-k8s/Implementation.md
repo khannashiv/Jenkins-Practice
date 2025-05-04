@@ -457,11 +457,11 @@ Summary for this stage .
     - Once our K8's cluster was ready, we further have done installation of ArgoCD using operator approach.
     - For which we have followed official documentation for installing operators i.e. https://operatorhub.io/operator/argocd-operator
         - Commands used for installtion & to verify if operators / pods deployed successfully or not.
-         .curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.31.0/install.sh | bash -s v0.31.0
-         .kubectl create -f https://operatorhub.io/install/argocd-operator.yaml
-         .kubectl get pods -n operators
-         .kubectl get pods -n operators -w
-         .kubectl get nodes -o wide
+         -  curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.31.0/install.sh | bash -s v0.31.0
+         - kubectl create -f https://operatorhub.io/install/argocd-operator.yaml
+         - kubectl get pods -n operators
+         - kubectl get pods -n operators -w
+         - kubectl get nodes -o wide
 
          - Some basic Kubectl commands .
 
@@ -512,7 +512,7 @@ Summary for this stage .
                 | `kubectl exec -it <pod-name> -- bash`         | Executes an interactive shell in the pod (if bash is available).  |
                 | `kubectl get events`                          | Shows recent events (warnings, info).                             |
 
- ![](images/minikube-1.PNG "minikube-1")
- ![](images/minikube-2.PNG "minikube-2")
- ![](images/ArgoCD-1.PNG "ArgoCD-1")
- ![](images/ArgoCD-2.PNG "ArgoCD-2")
+ - ![](images/minikube-1.PNG "minikube-1")
+ - ![](images/minikube-2.PNG "minikube-2")
+ - ![](images/ArgoCD-1.PNG "ArgoCD-1")
+ - ![](images/ArgoCD-2.PNG "ArgoCD-2")
