@@ -87,8 +87,8 @@
        }
    }
    ```
-    - ![](images/Pipeline-stage-1.PNG "Pipeline-stage-1")
-    
+![](images/Pipeline-stage-1.PNG "Pipeline-stage-1")
+
 <!-- Explanation of the 'Clean Workspace & Fix Permissions' stage:
 
 This stage ensures a clean workspace by removing old files and resetting permissions to avoid conflicts in subsequent stages.
