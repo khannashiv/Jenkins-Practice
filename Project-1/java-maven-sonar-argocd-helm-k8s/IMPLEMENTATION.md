@@ -320,5 +320,80 @@ What must be true for this stage to Work ?
     .. Jenkins must have Docker credentials stored as ID docker-cred.
     .. The Dockerfile must exist in the specified app directory.
     .. Jenkins must be running as a user with permission to run Docker (docker.sock access, often via --user root in Docker agents).
+-->
 
+
+  ```groovy
+   stages {
+
+        stage('Update Deployment File') {
+            environment {
+            GIT_REPO_NAME = "Jenkins-Practice"
+            GIT_USER_NAME = "khannashiv"
+            }
+        steps {
+            withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+            sh '''
+                echo "Updating deployment.yml with image tag ${BUILD_NUMBER}"
+                export GIT_DIR=$WORKSPACE/.git
+                export GIT_WORK_TREE=$WORKSPACE
+                git config user.email "khannashiv94@gmail.com"
+                git config user.name "Shiv"
+
+                sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+                git add Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+
+                git commit -m "Update deployment image to version ${BUILD_NUMBER}" || echo "Nothing to commit"
+                git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main || echo "Nothing to push"
+            '''
+            }
+        }
+    }
+   }
+   ```
+
+ ![](images/Pipeline-stage-15.PNG "Pipeline-stage-15")
+ ![](images/Pipeline-stage-10.PNG "Pipeline-stage-16")
+ ![](images/Pipeline-stage-11.PNG "Pipeline-stage-17")
+
+<!-- Explanation of the 'Update Deployment File' stage .
+ 
+ -- Environment Variables: These are used to build the GitHub push URL later.
+    GIT_REPO_NAME = "Jenkins-Practice"
+    GIT_USER_NAME = "khannashiv"
+
+-- withCredentials([string(...)]) : credentialsId: 'github', variable: 'GITHUB_TOKEN'
+    .. Securely loads your GitHub access token (stored in Jenkins under ID 'github').
+    .. It's assigned to the variable GITHUB_TOKEN for use in Git operations.
+
+
+-- echo "Updating deployment.yml with image tag ${BUILD_NUMBER}" : Logs the current action for visibility.
+
+--  export GIT_DIR=$WORKSPACE/.git
+    export GIT_WORK_TREE=$WORKSPACE
+     .. Meaning of export : Tells Git where your project is located — this setup is needed if Jenkins doesn’t automatically set it up as a standard Git working tree.
+
+--  git config user.email "khannashiv94@gmail.com"
+    git config user.name "Shiv"
+    .. Configures Git identity (needed for commits).
+
+-- sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
+    .. Replaces the placeholder text replaceImageTag in your deployment file with the actual Jenkins build number (e.g., 15).
+    .. This essentially updates the image tag to point to the new Docker image you just built.
+
+-- git add Project-1/.../deployment.yml
+    .. Stages the modified deployment file for commit.
+
+-- git commit -m "Update deployment image to version ${BUILD_NUMBER}" || echo "Nothing to commit"
+    .. Commits the change, or prints a message if nothing was actually changed.
+
+-- git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main || echo "Nothing to push"
+    .. Pushes the commit to the main branch on GitHub using your token for authentication.
+    .. Falls back to a message if there's nothing to push.
+
+
+Summary for this stage .
+        -- Edits your Kubernetes deployment file to use the latest image.
+        -- Commits and pushes that change to GitHub automatically.
+        -- This is essential for GitOps workflows, where you want your Git repo to be the single source of truth for deployments.
 -->
