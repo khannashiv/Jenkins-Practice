@@ -1,5 +1,6 @@
 
 ## Setting Up Jenkins
+
 1. **Install Jenkins**:
    - Set up a Jenkins server on an EC2 instance (e.g., t2.large).
    - Use the following command to retrieve the initial admin password:
@@ -355,6 +356,7 @@ What must be true for this stage to Work ?
  ![](images/Pipeline-stage-15.PNG "Pipeline-stage-15")
  ![](images/Pipeline-stage-16.PNG "Pipeline-stage-16")
  ![](images/Pipeline-stage-17.PNG "Pipeline-stage-17")
+ ![](images/Jenkins-server-docker-images.PNG "Jenkins-server-docker-images")
 
 <!-- Explanation of the 'Update Deployment File' stage .
  
@@ -398,4 +400,119 @@ Summary for this stage .
         -- This is essential for GitOps workflows, where you want your Git repo to be the single source of truth for deployments.
 -->
 
-## Here we have completed out CI part from implementation prospective .
+## Here we have completed CI part from implementation prospective .
+
+1. **Install MiniKube** :
+
+    - For this I have deployed ubuntu machine On premises . On top of it I have installed minikube cluster by following the documentation as follows as per my OS which in this case is ubuntu
+    - OS configuration
+        - RAM : 16GB
+        - Processor : 8
+        - Disk : 80 GB
+        - Since in my case initially minikube fails to start, hence I have to install drivers for linux distribution where I have used docker container based approach & following links have been attached from installation standpoint.
+    - Refrences .
+        - https://minikube.sigs.k8s.io/docs/start/?arch=%2Flinux%2Fx86-64%2Fstable%2Fbinary+download
+        - https://minikube.sigs.k8s.io/docs/drivers/
+        - https://minikube.sigs.k8s.io/docs/drivers/docker/
+
+    - Some basic minikube commands.
+
+    - Starting, Stopping, and Managing the Cluster
+
+        | Command            | Description                                                  |
+        | ------------------ | ------------------------------------------------------------ |
+        | `minikube start`   | Starts a Minikube cluster (creates one if it doesn't exist). |
+        | `minikube stop`    | Stops the Minikube cluster.                                  |
+        | `minikube delete`  | Deletes the Minikube cluster completely.                     |
+        | `minikube status`  | Shows the current status of the Minikube cluster.            |
+        | `minikube restart` | Restarts the Minikube cluster.                               |
+        | `minikube docker-env`	 | Shows how to use Minikube’s Docker daemon.               |
+
+    - Working with Add-ons
+
+    | Command                                | Description                                                         |
+    | -------------------------------------- | ------------------------------------------------------------------- |
+    | `minikube addons list`                 | Lists all available and enabled add-ons.                            |
+    | `minikube addons enable <addon-name>`  | Enables an add-on (e.g., `dashboard`, `metrics-server`, `ingress`). |
+    | `minikube addons disable <addon-name>` | Disables an add-on.                                                 |
+
+    - Accessing Services
+
+    | Command                           | Description                                                  |
+    | --------------------------------- | ------------------------------------------------------------ |
+    | `minikube service <service-name>` | Opens a service in your default browser.                     |
+    | `minikube service list`           | Lists URLs for services with NodePort or LoadBalancer types. |
+    | `minikube tunnel`                 | Enables LoadBalancer-type services to work locally.          |
+
+    - Working with the VM or Container
+
+    | Command                                | Description                                   |
+    | -------------------------------------- | --------------------------------------------- |
+    | `minikube ssh`                         | SSH into the Minikube VM/container.           |
+    | `minikube mount <host-path>:<vm-path>` | Mounts a host directory into the Minikube VM. |
+
+
+2. **Install ArgoCD** :
+
+    - Once our K8's cluster was ready, we further have done installation of ArgoCD using operator approach.
+    - For which we have followed official documentation for installing operators i.e. https://operatorhub.io/operator/argocd-operator
+        - Commands used for installtion & to verify if operators / pods deployed successfully or not.
+         .curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.31.0/install.sh | bash -s v0.31.0
+         .kubectl create -f https://operatorhub.io/install/argocd-operator.yaml
+         .kubectl get pods -n operators
+         .kubectl get pods -n operators -w
+         .kubectl get nodes -o wide
+
+         - Some basic Kubectl commands .
+
+            - Cluster Info & Configuration
+
+                | Command                | Description                       |
+                | ---------------------- | --------------------------------- |
+                | `kubectl version`      | Shows client and server versions. |
+                | `kubectl cluster-info` | Displays cluster endpoint URLs.   |
+                | `kubectl config view`  | Shows kubeconfig file details.    |
+                | `kubectl get nodes`    | Lists all nodes in the cluster.   |  
+
+            - Working with Resources .
+
+                | Command                   | Description                                                              |
+                | ------------------------- | ------------------------------------------------------------------------ |
+                | `kubectl get pods`        | Lists all pods in the current namespace.                                 |
+                | `kubectl get pods -A`     | Lists all pods in **all namespaces**.                                    |
+                | `kubectl get deployments` | Lists all deployments.                                                   |
+                | `kubectl get services`    | Lists all services (ClusterIP, NodePort, etc.).                          |
+                | `kubectl get all`         | Lists **all** common resource types (pods, services, deployments, etc.). |
+
+            - Create & Apply Resources
+
+                | Command                         | Description                                     |
+                | ------------------------------- | ----------------------------------------------- |
+                | `kubectl apply -f <file.yaml>`  | Applies a manifest (creates or updates).        |
+                | `kubectl create -f <file.yaml>` | Strictly creates a resource from the YAML file. |
+                | `kubectl delete -f <file.yaml>` | Deletes a resource defined in the YAML.         |
+                | `kubectl delete pod <pod-name>` | Deletes a specific pod.                         |
+
+            - Namespaces
+
+            | Command                                                        | Description                                             |
+            | -------------------------------------------------------------- | ------------------------------------------------------- |
+            | `kubectl get namespaces`                                       | Lists all namespaces.                                   |
+            | `kubectl get pods -n <namespace>`                              | Lists pods in a specific namespace.                     |
+            | `kubectl config set-context --current --namespace=<namespace>` | Changes the default namespace for your current context. |
+
+
+            - Inspecting & Debugging
+
+                | Command                                       | Description                                                       |
+                | --------------------------------------------- | ----------------------------------------------------------------- |
+                | `kubectl describe pod <pod-name>`             | Shows detailed info about a pod (events, container status, etc.). |
+                | `kubectl logs <pod-name>`                     | Shows logs from a pod's main container.                           |
+                | `kubectl logs <pod-name> -c <container-name>` | Logs from a specific container in a multi-container pod.          |
+                | `kubectl exec -it <pod-name> -- bash`         | Executes an interactive shell in the pod (if bash is available).  |
+                | `kubectl get events`                          | Shows recent events (warnings, info).                             |
+
+ ![](images/minikube-1.PNG "minikube-1")
+ ![](images/minikube-2.PNG "minikube-2")
+ ![](images/ArgoCD-1.PNG "ArgoCD-1")
+ ![](images/ArgoCD-2.PNG "ArgoCD-2")
