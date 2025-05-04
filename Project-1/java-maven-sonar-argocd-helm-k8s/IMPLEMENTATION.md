@@ -16,7 +16,6 @@
 3. **Create a New Pipeline**:
    - Click on "New Item" on the Jenkins home page.
    - Select "Pipeline" as the project type.
-   - ![Alt text](images/Jenkins-config-1.PNG "Jenkins-config")
 
 4. **Configure the Pipeline**:
    - Add a general description.
@@ -26,6 +25,7 @@
      - **Repository URL**: `https://github.com/khannashiv/Jenkins-Practice`
      - **Branches to build**: Specify the branch name.
      - **Script Path**: Path to your `Jenkinsfile`.
+     - - ![Alt text](images/Jenkins-config-1.PNG "Jenkins-config")
 
 ---
 
