@@ -134,10 +134,43 @@ This stage ensures a clean workspace by removing old files and resetting permiss
     . Recreates the workspace directory if needed.
     . -p ensures no error is thrown if it already exists.
 - chown -R 111:113 ${WORKSPACE}
-    . Changes the ownership of the workspace directory to user ID 111 and group ID 113.
+    . Changes the ownership of the workspace directory to user ID 111 (Jenkins) and group ID 113 (Jenkins).
     . -R: recursive, applies to all files and subdirectories.
 - Purpose of this Stage:
         -- Ensures a clean build environment.
         -- Resolves file permission issues, especially in Docker-based builds where user IDs in the container and host differ.
         -- Prevents problems from leftover files of previous builds.
+-->
+
+   ```groovy
+   stages {
+
+    stage('Checkout') {
+        steps {
+            checkout([
+            $class: 'GitSCM',
+            branches: [[name: '*/main']],
+            userRemoteConfigs: [[
+                url: 'https://github.com/khannashiv/Jenkins-Practice.git',
+                credentialsId: 'github'
+            ]]
+            ])
+        }
+        }
+   }
+   ```
+![](images/Pipeline-stage-2.PNG "Pipeline-stage-2")
+
+<!-- Explanation of the 'Checkout' stage .
+
+-- stage('Checkout') : Defines a stage in the pipeline called "Checkout", where source code retrieval occurs.
+    -- steps { ... } : Contains the commands to be executed during this stage.
+        -- checkout([ ... ]) : Invokes a manual Git checkout using Jenkins' internal Git plugin (GitSCM class).
+            . $class: 'GitSCM' : Tells Jenkins to use the GitSCM (Source Control Manager) plugin for this checkout.
+            . branches: [[name: '*/main']] : Specifies the branch to check out.
+                */main matches the main branch regardless of the remote name (origin/main, etc.).
+            . userRemoteConfigs: [[ ... ]] : Defines where to pull the source code from and what credentials to use: url: 'https://github.com/khannashiv/Jenkins-Practice.git' -- > The GitHub repository URL.
+            . credentialsId: 'github' : The ID of credentials stored in Jenkins (in Manage Jenkins > Credentials).
+                - This is mainly used for authenticated access to private repositories.
+                - This ID must match the one we've configured in Jenkins (e.g., personal access token or classic token).
 -->
