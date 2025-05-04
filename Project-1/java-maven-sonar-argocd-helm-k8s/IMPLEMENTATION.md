@@ -94,10 +94,12 @@ Prerequisites for this to Work .
    }
    ```
 
-<!-- Explanation of the options block above:
+<!-- Explanation of the options block mentioned above .
 
 - `skipDefaultCheckout(true)`: Prevents Jenkins from automatically checking out the repository source code at the start of the pipeline. This is useful for custom checkouts and avoiding permission issues.
 - `buildDiscarder(logRotator(numToKeepStr: '10'))`: Configures Jenkins to retain only the last 10 builds, automatically discarding older build logs to save disk space.
+- skipDefaultCheckout(true) and buildDiscarder(logRotator(...)) are built-in features provided by Jenkins for use in Declarative Pipelines.
+
 -->
 
    ```groovy
