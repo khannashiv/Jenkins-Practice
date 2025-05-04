@@ -1,4 +1,3 @@
-
 ---
 
 ## Setting Up Jenkins
@@ -48,7 +47,7 @@
         }
     }
 
-<!-- Meaning of agent block mentioned above .
+<!-- Meaning of agent block mentioned above.
 
 agent: This directive tells Jenkins where and how to run the pipeline or stage. In this case, it's specifying to use a Docker container as the build environment.
 
@@ -63,33 +62,12 @@ agent: This directive tells Jenkins where and how to run the pipeline or stage. 
             -v /var/run/docker.sock:/var/run/docker.sock: Mounts the host's Docker socket into the container, allowing Docker commands (e.g., building images, running containers) inside the Jenkins container to communicate with the host's Docker daemon. 
 -->
 
-<!-- Folow up questions on agent block .
-
-Q: How Jenkins gets the Docker Image ?
-Sol : 
-Docker Plugin Usage: Jenkins must have the Docker Pipeline plugin installed. This plugin allows Jenkins to use Docker containers as agents for pipeline steps.
-
-    Image Pulling:
-
-    -- The Docker engine on the Jenkins agent node (where this is being executed) checks if the image khannashiv/maven-shiv-docker-agent:v1 is  already available locally.
-    -- If the image is not available locally, it tries to pull it from Docker Hub (or another Docker registry, if configured).
-    -- Docker Registry Authentication (if needed):
-        -- If the image is private, Jenkins must have credentials configured (usually via Docker config file or Jenkins credentials system).
-        -- If the image is public (like most images on Docker Hub), Jenkins will pull it without credentials.
-
-    Container Execution:
-
-    Once the image is available, Jenkins runs the container with the specified args, in this case:
-        --user root: runs the container as the root user.
-        -v /var/run/docker.sock:/var/run/docker.sock: mounts the host's Docker socket into the container, allowing Docker commands inside the container to control Docker on the host .
--->
-
     options {
         skipDefaultCheckout(true) // Disable default SCM checkout to fix permission issues
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
-<!--  Meaning of options block mentioned above .
+<!--  Meaning of options block mentioned above.
 
 1. skipDefaultCheckout(true)
     Purpose: Prevents Jenkins from automatically checking out the source code from your Source Control Management (SCM) (like Git) at the start of the pipeline.
@@ -127,8 +105,7 @@ This options block overall disables the default source code checkout and configu
             }
         }
 
-        - ![](images/Pipeline-stage-1.PNG "Pipeline-stage-1")
-
+        <!-- The above stage ensures a clean workspace and fixes permissions to avoid permission-related issues in subsequent stages. -->
 
         stage('Checkout') {
         steps {
@@ -143,12 +120,16 @@ This options block overall disables the default source code checkout and configu
             }
         }
 
+        <!-- This stage checks out the code from the Git repository using the specified branch and credentials. -->
+
         stage('Build and Test') {
         steps {
             sh 'ls -ltr'
             sh 'cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
         }
         }
+
+        <!-- This stage builds the Maven project and runs all the tests. -->
 
         stage('Static Code Analysis') {
         environment {
@@ -160,6 +141,8 @@ This options block overall disables the default source code checkout and configu
             }
         }
         }
+
+        <!-- This stage performs static code analysis using SonarQube. -->
 
         stage('Build and Push Docker Image') {
         environment {
@@ -176,6 +159,8 @@ This options block overall disables the default source code checkout and configu
             }
         }
         }
+
+        <!-- This stage builds a Docker image and pushes it to Docker Hub using the provided credentials. -->
 
         stage('Update Deployment File') {
         environment {
@@ -200,7 +185,7 @@ This options block overall disables the default source code checkout and configu
             }
         }
     }
+    
+    <!-- This stage updates the deployment file to reference the new Docker image version and pushes it to the Git repository. -->
 
 }
-
-## Meaning of Jenkins Pipeline
