@@ -49,14 +49,21 @@
    ```
 
 <!-- Explanation of the agent block above:
+    - pipeline { ... }
+        This declares a Declarative Pipeline, the modern and more structured way to define Jenkins pipelines.
+        - `agent`: Specifies where and how Jenkins should run the pipeline or specific stages.
+            - `docker`: Indicates the pipeline will run inside a Docker container.
+                - `image`: Specifies the Docker image (`khannashiv/maven-shiv-docker-agent:v1`) to use.
+                    - Jenkins will:
+                        - Pull this image from Docker Hub (or another registry) if it's not already on the system (i.e. if not present on Jenkins Node.)
+                        - Start a container using this image to run the pipeline steps.
+                        - This image probably includes Maven, Java, and other tools needed for building Java projects.
+                - `args`: Provides additional arguments to the Docker container:
+                - `--user root`: Runs the container as the root user.
+                - `-v /var/run/docker.sock:/var/run/docker.sock`: Mounts the host's Docker socket into the container, allowing Docker commands inside the container to interact with the host's Docker daemon.
 
-- `agent`: Specifies where and how Jenkins should run the pipeline or specific stages.
-- `docker`: Indicates the pipeline will run inside a Docker container.
-- `image`: Specifies the Docker image (`khannashiv/maven-shiv-docker-agent:v1`) to use.
-- `args`: Provides additional arguments to the Docker container:
-  - `--user root`: Runs the container as the root user.
-  - `-v /var/run/docker.sock:/var/run/docker.sock`: Mounts the host's Docker socket into the container, allowing Docker commands inside the container to interact with the host's Docker daemon.
-
+- Summary of this code block
+    - This pipeline block configures Jenkins to run all build steps inside a custom Docker container with root access and Docker control, which is useful for Maven-based projects that also need to build or run Docker images.
 -->
 
    ```groovy
