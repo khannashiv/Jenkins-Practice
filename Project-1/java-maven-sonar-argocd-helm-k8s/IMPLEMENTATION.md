@@ -1,15 +1,58 @@
-Jenkins Pipeline for Java based application using Maven, SonarQube, Argo CD, Helm and Kubernetes .
 
-Git || VCS || SCM 
+---
 
-First of all we have created a new git repository to implement this project. Here the name of the repository is : Jenkins-Practice and url for the repository is : https://github.com/khannashiv/Jenkins-Practice/
+## Setting Up Jenkins
+1. **Install Jenkins**:
+   - Set up a Jenkins server on an EC2 instance (e.g., t2.large).
+   - Use the following command to retrieve the initial admin password:
+     ```bash
+     cat /var/lib/jenkins/secrets/initialAdminPassword
+     ```
 
-Under this repository, we have added required folders such as ArgoCD, spring-boot-app, spring-boot-app-manifests and README.md file for the base project .
+2. **Log into Jenkins**:
+   - Navigate to the Jenkins admin page.
+   - Enter the username `Jenkins` and the password retrieved in Step 1.
 
-Jenkins 
+3. **Create a New Pipeline**:
+   - Click on "New Item" on the Jenkins home page.
+   - Select "Pipeline" as the project type.
 
-We have done the installion  of Jenkins Server on EC2 instance i.ee. t2.large
-Once installation of Jenkins completes, We have logged into admin page of Jenkins using user-name as Jenkins & passsword as XXX
-To pull default password for jenkins, you can use : cat /var/lib/jenkins/secrets/initialAdminPassword
-Then we have clicked on new item from Jenkins home page >> Selected the type of project i.e. in my case I have selected pipeline as my project type.
-After this I have added General description, Discard old build section, Pipeline definition, SCM as Git, Repository URL, branches to build, script path i.e. path to your Jenkins file.
+4. **Configure the Pipeline**:
+   - Add a general description.
+   - Set up the "Discard old builds" section.
+   - Define the pipeline:
+     - **SCM**: Git
+     - **Repository URL**: `https://github.com/khannashiv/Jenkins-Practice`
+     - **Branches to build**: Specify the branch name.
+     - **Script Path**: Path to your `Jenkinsfile`.
+
+---
+
+## Configuring the Pipeline
+- **Jenkinsfile**: Add the pipeline script in a file named `Jenkinsfile` at the root of the repository. Example:
+   ```groovy
+   pipeline {
+       agent any
+       stages {
+           stage('Build') {
+               steps {
+                   sh 'mvn clean install'
+               }
+           }
+           stage('Test') {
+               steps {
+                   sh 'mvn test'
+               }
+           }
+           stage('Code Analysis') {
+               steps {
+                   sh 'sonar-scanner'
+               }
+           }
+           stage('Deploy') {
+               steps {
+                   sh 'helm install ...'
+               }
+           }
+       }
+   }
