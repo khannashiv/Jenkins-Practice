@@ -203,3 +203,26 @@ This stage ensures a clean workspace by removing old files and resetting permiss
         . Maven (mvn) must be installed and available in the environment or Docker container.
         . The directory must contain a valid pom.xml.
 -->
+
+  ```groovy
+   stages {
+
+        stage('Static Code Analysis') {
+            environment {
+            SONAR_URL = "http://3.87.39.73:9000"
+        }
+            steps {
+                withCredentials([string(credentialsId: 'sonarqube_token', variable: 'SONAR_AUTH_TOKEN')]) {
+                sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
+                }
+            }
+    }
+   }
+   ```
+
+   ![](images/Pipeline-stage-5.PNG "Pipeline-stage-5")
+   ![](images/Pipeline-stage-6.PNG "Pipeline-stage-6")
+   ![](images/Pipeline-stage-7.PNG "Pipeline-stage-7")
+   ![](images/Pipeline-stage-8.PNG "Pipeline-stage-8")
+
+   
