@@ -452,7 +452,7 @@ Summary for this stage .
     | `minikube mount <host-path>:<vm-path>` | Mounts a host directory into the Minikube VM. |
 
 
-2. **Install ArgoCD** :
+2. **Install ArgoCD via operator** :
 
     - Once our K8's cluster was ready, we further have done installation of ArgoCD using operator approach.
     - For which we have followed official documentation for installing operators i.e. https://operatorhub.io/operator/argocd-operator
@@ -516,3 +516,48 @@ Summary for this stage .
  - ![](images/minikube-2.PNG "minikube-2")
  - ![](images/ArgoCD-1.PNG "ArgoCD-1")
  - ![](images/ArgoCD-2.PNG "ArgoCD-2")
+
+
+3. **Creating ArgoCD controller** :
+
+    - Create a new yml file say by the name of : vim argocd-basic.yml
+    - Copy the content in the above yaml file as mentioned in the below documentation.
+    - Refrence docs : https://argocd-operator.readthedocs.io/en/latest/usage/basics/ 
+    - After this run command i.e.  kubectl apply -f argocd-basic.yml and wait for argocd pods to get deployed under default namespace.
+    - Once pods are ready go to the services such that : kubectl get svc & look for example-argocd-server and by default the type of service will be ClusterIP.
+    - We will go ahead & convert this to NodePort so that we can login to ArgoCD via browser since this service is responsible for ArgoCD UI . So we will run command i.e. kubectl edit svc example-argocd-server ( This may not work due to ownerReferences section hence follow below stepsto change service type.)
+
+        - kubectl get argocd -A
+        - kubectl edit argocd example-argocd -n default
+        - Search for the server section and see if you can define.Further Update the service type to NodePort from ClusterIP & then save and check the service .
+                spec:
+                    server:
+                        service:
+                            type: NodePort
+    - Further we will generate the URL, so that we can access AgroCD over a web browser. For this we will use command i.e. 
+        - minikube service list
+        - minikube service example-argocd-server
+
+    - Next to login to ArgoCD, we have user-name as admin & password we have to pull from secret section of argocd cluster i.e. example-argocd-cluster
+        - Commands used are .
+            - kubectl get secret
+            - kubectl edit secret example-argocd-cluster
+            -  echo <XXXXXX> | base64 -d        # Decode password using base64 conversion.
+            - Finally we will able to login to admin page of ArgoCD.
+
+4. **Final application deployed via ArgoCD**
+
+- Further we have created an application on ArgoCD UI where we have mentioned following details i.e.
+
+    - CLUSTER   : https://kubernetes.default.svc
+    - NAMESPACE : default
+    - REPO URL  : https://github.com/khannashiv/Jenkins-Practice 
+    - PATH      : To manifest files i.e. Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/ 
+    - Finally we can see our application running on top of pods got deployed sucessfully after configuring ArgoCD.
+        - kubectl get pods
+        - kubectl get deploy
+        - kubectl get svc
+        - minikube service list
+        - We can see minikube has alloted 1 more URL to application i.e. using which we can load app on top of browser .
+        
+            default     | spring-boot-app-service                            | http/80      | http://192.168.49.2:31123
