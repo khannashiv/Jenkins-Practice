@@ -559,5 +559,17 @@ Summary for this stage .
         - kubectl get svc
         - minikube service list
         - We can see minikube has alloted 1 more URL to application i.e. using which we can load app on top of browser .
-        
+
             default     | spring-boot-app-service                            | http/80      | http://192.168.49.2:31123
+
+
+ - ![](images/ArgoCD-3.PNG "ArgoCD-3")
+ - ![](images/ArgoCD-4.PNG "ArgoCD-4")
+ - ![](images/ArgoCD-5.PNG "ArgoCD-5")
+ - ![](images/ArgoCD-6.PNG "ArgoCD-6")
+ - ![](images/ArgoCD-7.PNG "ArgoCD-7")
+ - ![](images/ArgoCD-8.PNG "ArgoCD-8")
+ - ![](images/ArgoCD-9.PNG "ArgoCD-9")
+ - ![](images/ArgoCD-10.PNG "ArgoCD-10")
+ - ![](images/ArgoCD-11.PNG "ArgoCD-11")
+ - ![](images/ArgoCD-12.PNG "ArgoCD-12")
