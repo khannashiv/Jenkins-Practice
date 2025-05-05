@@ -572,4 +572,5 @@ Summary for this stage .
  - ![](images/ArgoCD-9.PNG "ArgoCD-9")
  - ![](images/ArgoCD-10.PNG "ArgoCD-10")
  - ![](images/ArgoCD-11.PNG "ArgoCD-11")
+ - ![](images/ArgoCD-13.PNG "ArgoCD-13")
  - ![](images/ArgoCD-12.PNG "ArgoCD-12")
