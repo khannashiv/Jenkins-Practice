@@ -400,7 +400,7 @@ Summary for this stage .
         -- This is essential for GitOps workflows, where you want your Git repo to be the single source of truth for deployments.
 -->
 
-## Here we have completed CI part from implementation prospective .
+## Here we have completed CI part from implementation prospective & we are going to implement CD part .
 
 1. **Install MiniKube** :
 
