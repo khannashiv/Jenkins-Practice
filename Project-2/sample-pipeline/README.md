@@ -29,4 +29,50 @@ Sol  :
     -- Pulls the image from there using Docker's built-in logic.
     -- Jenkins simply uses the Docker CLI (via the docker pipeline syntax) on the agent.
     -- So it inherits Docker’s default behavior, including pulling from Docker Hub unless told otherwise.
+
+Ques : To pull a Docker image from a private registry or any non-Docker Hub registry ?
+Sol : 
+    -- Specify the Full Image Path with Registry i.e. 
+        -- Instead of: docker { image 'rabbitmq:4.1-management' } Use: docker { image 'myregistry.com/myuser/myimage:tag' }
+        -- Where:
+                - myregistry.com = your private registry address
+                - myuser/myimage = image name
+                - tag = optional image tag (e.g., latest, 1.0)
+
+    -- Add Docker Registry Credentials in Jenkins .
+        To authenticate with the private registry:
+            - Go to Jenkins → Manage Jenkins → Credentials.
+            - Add new credentials:
+            - Kind: Username with password (for Docker login)
+            - ID: e.g., docker-creds
+            - Use your private registry username and password or classic token or PAT 
+
+    -- Use Credentials in Your Pipeline .
+        -- Specify the credentials and registry in the pipeline. i.e. 
+
+            docker.withRegistry('https://myregistry.com', 'docker-creds') {
+                docker.image('myregistry.com/myuser/myimage:tag').inside {
+                    // Your steps here
+                }
+            }
+    Sample example is as follows .
+
+    pipeline {
+    agent none
+    stages {
+        stage('Run with private image') {
+            agent {
+                docker {
+                    image 'myregistry.com/myuser/myimage:latest'
+                    registryUrl 'https://myregistry.com'
+                    registryCredentialsId 'docker-creds'
+                }
+            }
+            steps {
+                echo 'Running inside private image'
+            }
+        }
+    }
+}
+
   -->
