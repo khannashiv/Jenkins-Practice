@@ -1,0 +1,12 @@
+pipeline {
+  agent {
+    docker { image 'rabbitmq:4.1-management' }
+  }
+  stages {
+    stage('Test') {
+      steps {
+        sh 'rabbitmqctl version'
+      }
+    }
+  }
+}
