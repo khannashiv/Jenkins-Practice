@@ -1,0 +1,59 @@
+Started by user admin
+Obtained Project-2/sample-pipeline/Jenkinsfile from git https://github.com/khannashiv/Jenkins-Practice
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/Sample-pipeline
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Sample-pipeline/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/khannashiv/Jenkins-Practice # timeout=10
+Fetching upstream changes from https://github.com/khannashiv/Jenkins-Practice
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/khannashiv/Jenkins-Practice +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision e10f5700b4c7fa567c166ec07b431c7cfb916090 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f e10f5700b4c7fa567c166ec07b431c7cfb916090 # timeout=10
+Commit message: "test"
+ > git rev-list --no-walk 252979705bebf274b7f92f975e2d21688ac5d1ca # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ docker inspect -f . rabbitmq:4.1-management
+.
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] withDockerContainer
+Jenkins does not seem to be running inside a container
+$ docker run -t -d -u 111:113 -w /var/lib/jenkins/workspace/Sample-pipeline -v /var/lib/jenkins/workspace/Sample-pipeline:/var/lib/jenkins/workspace/Sample-pipeline:rw,z -v /var/lib/jenkins/workspace/Sample-pipeline@tmp:/var/lib/jenkins/workspace/Sample-pipeline@tmp:rw,z -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** rabbitmq:4.1-management cat
+$ docker top 23eb16ac509cdf8cfeefeb7ab1a8c329028e7c3fd36124b2bf37ef0642af124c -eo pid,comm
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Test)
+[Pipeline] sh
++ rabbitmqctl version
+4.1.0
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+$ docker stop --time=1 23eb16ac509cdf8cfeefeb7ab1a8c329028e7c3fd36124b2bf37ef0642af124c
+$ docker rm -f --volumes 23eb16ac509cdf8cfeefeb7ab1a8c329028e7c3fd36124b2bf37ef0642af124c
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

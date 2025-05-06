@@ -1,0 +1,16 @@
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Sample-pipeline/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/khannashiv/Jenkins-Practice # timeout=10
+Fetching upstream changes from https://github.com/khannashiv/Jenkins-Practice
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/khannashiv/Jenkins-Practice +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision e10f5700b4c7fa567c166ec07b431c7cfb916090 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f e10f5700b4c7fa567c166ec07b431c7cfb916090 # timeout=10
+Commit message: "test"
+ > git rev-list --no-walk 252979705bebf274b7f92f975e2d21688ac5d1ca # timeout=10
