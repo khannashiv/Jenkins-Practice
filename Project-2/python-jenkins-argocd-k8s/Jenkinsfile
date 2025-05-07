@@ -21,6 +21,7 @@ pipeline {
                 script{
                     sh '''
                     echo 'Buid Docker Image'
+                     ls -al /var/lib/jenkins/workspace/python-todo-app/'
                     docker build -t khannashiv/cicd-e2e:${BUILD_NUMBER} -f Dockerfile .
                     '''
                 }
