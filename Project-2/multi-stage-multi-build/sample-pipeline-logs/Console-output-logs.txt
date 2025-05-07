@@ -1,0 +1,184 @@
+Started by user admin
+Obtained Project-2/multi-stage-multi-build/Jenkinsfile from git https://github.com/khannashiv/Jenkins-Practice
+[Pipeline] Start of Pipeline
+[Pipeline] stage
+[Pipeline] { (Back-end)
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/multi-stage-multi-build
+[Pipeline] {
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/khannashiv/Jenkins-Practice
+ > git init /var/lib/jenkins/workspace/multi-stage-multi-build # timeout=10
+Fetching upstream changes from https://github.com/khannashiv/Jenkins-Practice
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/khannashiv/Jenkins-Practice +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/khannashiv/Jenkins-Practice # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 5b6cd8395bc4a1d977dbe80982282d48638b95b2 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 5b6cd8395bc4a1d977dbe80982282d48638b95b2 # timeout=10
+Commit message: "test"
+First time build. Skipping changelog.
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ docker inspect -f . maven:3.8.1-adoptopenjdk-11
+
+Error: No such object: maven:3.8.1-adoptopenjdk-11
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ docker pull maven:3.8.1-adoptopenjdk-11
+3.8.1-adoptopenjdk-11: Pulling from library/maven
+16ec32c2132b: Pulling fs layer
+3f63509f5b97: Pulling fs layer
+34d7b43f221b: Pulling fs layer
+a1931e18ae45: Pulling fs layer
+20904a3b2df7: Pulling fs layer
+fb5c0685f15f: Pulling fs layer
+a18abadafb9a: Pulling fs layer
+a1931e18ae45: Waiting
+20904a3b2df7: Waiting
+fb5c0685f15f: Waiting
+a18abadafb9a: Waiting
+3f63509f5b97: Verifying Checksum
+3f63509f5b97: Download complete
+16ec32c2132b: Verifying Checksum
+16ec32c2132b: Download complete
+20904a3b2df7: Verifying Checksum
+20904a3b2df7: Download complete
+fb5c0685f15f: Verifying Checksum
+fb5c0685f15f: Download complete
+a18abadafb9a: Verifying Checksum
+a18abadafb9a: Download complete
+a1931e18ae45: Verifying Checksum
+a1931e18ae45: Download complete
+34d7b43f221b: Verifying Checksum
+34d7b43f221b: Download complete
+16ec32c2132b: Pull complete
+3f63509f5b97: Pull complete
+34d7b43f221b: Pull complete
+a1931e18ae45: Pull complete
+20904a3b2df7: Pull complete
+fb5c0685f15f: Pull complete
+a18abadafb9a: Pull complete
+Digest: sha256:143ff7942b5ef5a004252405a31fa2813dfa438f08494fad1757029de5f64082
+Status: Downloaded newer image for maven:3.8.1-adoptopenjdk-11
+docker.io/library/maven:3.8.1-adoptopenjdk-11
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] withDockerContainer
+Jenkins does not seem to be running inside a container
+$ docker run -t -d -u 111:113 -w /var/lib/jenkins/workspace/multi-stage-multi-build -v /var/lib/jenkins/workspace/multi-stage-multi-build:/var/lib/jenkins/workspace/multi-stage-multi-build:rw,z -v /var/lib/jenkins/workspace/multi-stage-multi-build@tmp:/var/lib/jenkins/workspace/multi-stage-multi-build@tmp:rw,z -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** maven:3.8.1-adoptopenjdk-11 cat
+$ docker top 679a1686d5c3b8af306232607dd8b88a439ae4c77d62788aad92b0a24560ce95 -eo pid,comm
+[Pipeline] {
+[Pipeline] sh
++ mvn --version
+Apache Maven 3.8.1 (05c21c65bdfed0f71a2f2ada8b84da59348c4c5d)
+Maven home: /usr/share/maven
+Java version: 11.0.11, vendor: AdoptOpenJDK, runtime: /opt/java/openjdk
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "6.8.0-1024-aws", arch: "amd64", family: "unix"
+[Pipeline] }
+$ docker stop --time=1 679a1686d5c3b8af306232607dd8b88a439ae4c77d62788aad92b0a24560ce95
+$ docker rm -f --volumes 679a1686d5c3b8af306232607dd8b88a439ae4c77d62788aad92b0a24560ce95
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Front-end)
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/multi-stage-multi-build
+[Pipeline] {
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/multi-stage-multi-build/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/khannashiv/Jenkins-Practice # timeout=10
+Fetching upstream changes from https://github.com/khannashiv/Jenkins-Practice
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/khannashiv/Jenkins-Practice +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 5b6cd8395bc4a1d977dbe80982282d48638b95b2 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 5b6cd8395bc4a1d977dbe80982282d48638b95b2 # timeout=10
+Commit message: "test"
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ docker inspect -f . node:16-alpine
+
+Error: No such object: node:16-alpine
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ docker pull node:16-alpine
+16-alpine: Pulling from library/node
+7264a8db6415: Pulling fs layer
+eee371b9ce3f: Pulling fs layer
+93b3025fe103: Pulling fs layer
+d9059661ce70: Pulling fs layer
+d9059661ce70: Waiting
+93b3025fe103: Verifying Checksum
+93b3025fe103: Download complete
+7264a8db6415: Verifying Checksum
+7264a8db6415: Download complete
+d9059661ce70: Verifying Checksum
+d9059661ce70: Download complete
+eee371b9ce3f: Verifying Checksum
+eee371b9ce3f: Download complete
+7264a8db6415: Pull complete
+eee371b9ce3f: Pull complete
+93b3025fe103: Pull complete
+d9059661ce70: Pull complete
+Digest: sha256:a1f9d027912b58a7c75be7716c97cfbc6d3099f3a97ed84aa490be9dee20e787
+Status: Downloaded newer image for node:16-alpine
+docker.io/library/node:16-alpine
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] withDockerContainer
+Jenkins does not seem to be running inside a container
+$ docker run -t -d -u 111:113 -w /var/lib/jenkins/workspace/multi-stage-multi-build -v /var/lib/jenkins/workspace/multi-stage-multi-build:/var/lib/jenkins/workspace/multi-stage-multi-build:rw,z -v /var/lib/jenkins/workspace/multi-stage-multi-build@tmp:/var/lib/jenkins/workspace/multi-stage-multi-build@tmp:rw,z -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** node:16-alpine cat
+$ docker top 5e7af223c8e770158ca4beb12d8b7be292375ecf1e008e5c6154ada1a18dc088 -eo pid,comm
+[Pipeline] {
+[Pipeline] sh
++ node --version
+v16.20.2
+[Pipeline] }
+$ docker stop --time=1 5e7af223c8e770158ca4beb12d8b7be292375ecf1e008e5c6154ada1a18dc088
+$ docker rm -f --volumes 5e7af223c8e770158ca4beb12d8b7be292375ecf1e008e5c6154ada1a18dc088
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] End of Pipeline
+Finished: SUCCESS
