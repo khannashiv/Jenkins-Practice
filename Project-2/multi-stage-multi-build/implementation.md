@@ -7,5 +7,5 @@
 
 ![](images/Output-1.png "Output-1")
 ![](images/Output-2.png "Output-2")
-![](images/config-1.png "config-1")
+![](images/Config-1.png "config-1")
 ![](images/Config-2.png "config-2")
