@@ -5,5 +5,5 @@
 - https://www.jenkins.io/doc/book/pipeline/docker/
 - https://www.jenkins.io/doc/book/pipeline/ 
 
-![](images/Output-1.PNG "Output-1")
-![](images/Output-2.PNG "Output-2")
+![](images/Output-1.png "Output-1")
+![](images/Output-2.png "Output-2")
