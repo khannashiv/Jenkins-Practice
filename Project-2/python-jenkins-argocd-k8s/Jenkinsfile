@@ -73,13 +73,18 @@ pipeline {
                             git clone https://github.com/khannashiv/Jenkins-Practice.git src-repo
 
                             echo "Modifying deploy.yaml in source repo"
+                            POD_YAML_PATH="src-repo/Project-2/python-jenkins-argocd-k8s/deploy/pod.yaml"
+                            SERVICE_YAML_PATH="src-repo/Project-2/python-jenkins-argocd-k8s/deploy/service.yaml"
                             DEPLOY_YAML_PATH="src-repo/Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml"
+                            
                             sed -i "s/v1/${BUILD_NUMBER}/g" "$DEPLOY_YAML_PATH"
                             cat "$DEPLOY_YAML_PATH"
 
                             echo "Copying updated deploy.yaml to target repo"
                             mkdir -p target-repo/Project-2/python-jenkins-argocd-k8s/deploy
                             cp "$DEPLOY_YAML_PATH" target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
+                            cp "$SERVICE_YAML_PATH" target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
+                            cp "$POD_YAML_PATH" target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
 
                             cd target-repo
                             git config user.email "khannashiv94@gmail.com"
