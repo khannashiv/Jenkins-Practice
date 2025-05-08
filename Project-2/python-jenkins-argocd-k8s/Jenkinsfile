@@ -76,7 +76,7 @@ pipeline {
                             POD_YAML_PATH="src-repo/Project-2/python-jenkins-argocd-k8s/deploy/pod.yaml"
                             SERVICE_YAML_PATH="src-repo/Project-2/python-jenkins-argocd-k8s/deploy/service.yaml"
                             DEPLOY_YAML_PATH="src-repo/Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml"
-                            
+
                             sed -i "s/v1/${BUILD_NUMBER}/g" "$DEPLOY_YAML_PATH"
                             cat "$DEPLOY_YAML_PATH"
 
@@ -90,8 +90,8 @@ pipeline {
                             git config user.email "khannashiv94@gmail.com"
                             git config user.name "Shiv"
 
-                            git add Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml
-                            git commit -m "Updated the deploy.yaml | Jenkins Pipeline" || echo "Nothing to commit"
+                            git add Project-2/python-jenkins-argocd-k8s/deploy/*
+                            git commit -m "Updated the deploy.yaml along with this copying pod.yaml as well as service.yaml | Jenkins Pipeline" || echo "Nothing to commit"
                             git push origin main || echo "Nothing to push"
                         '''                        
                     }
