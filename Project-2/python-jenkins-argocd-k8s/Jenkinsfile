@@ -68,19 +68,21 @@ pipeline {
                             echo "Cloning target repo..."
                             rm -rf target-repo
                             git clone https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git target-repo
-                            cd target-repo
 
-                            echo "Updating deployment.yaml with image tag ${BUILD_NUMBER}"
+                            echo "Modifying deployment.yaml in source repo"
                             sed -i "s/v1/${BUILD_NUMBER}/g" Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml
                             cat Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml
 
+                            echo "Copying updated deploy.yaml to target repo"
+                            cp Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
+
+                            cd target-repo
                             git config user.email "khannashiv94@gmail.com"
                             git config user.name "Shiv"
 
                             git add Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml
                             git commit -m "Updated the deploy.yaml | Jenkins Pipeline" || echo "Nothing to commit"
                             git push origin main || echo "Nothing to push"
-
                         '''                        
                     }
                 }
