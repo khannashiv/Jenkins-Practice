@@ -78,25 +78,25 @@ pipeline {
                             DEPLOY_YAML_PATH="src-repo/Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml"
 
                             sed -i "s/ReplaceImageTag/${BUILD_NUMBER}/g" "$DEPLOY_YAML_PATH"
-                            # sed -i "s/v1/${BUILD_NUMBER}/g" "$POD_YAML_PATH"
-                            # sed -i "s/v1/${BUILD_NUMBER}/g" "$SERVICE_YAML_PATH"
+                            sed -i "s/ReplaceImageTag/${BUILD_NUMBER}/g" "$POD_YAML_PATH"
+        
 
                             echo "Printing the udpated build number for manifest files."
                             cat "$DEPLOY_YAML_PATH"
-                            # cat "$POD_YAML_PATH"
-                            # cat "$SERVICE_YAML_PATH"
+                            cat "$POD_YAML_PATH"
+        
 
                             echo "Copying updated deploy.yaml to target repo"
                             mkdir -p target-repo/Project-2/python-jenkins-argocd-k8s/deploy
                             cp "$DEPLOY_YAML_PATH" target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
                             cp "$SERVICE_YAML_PATH" target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
-                            # cp "$POD_YAML_PATH" target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
+                            cp "$POD_YAML_PATH" target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
 
                             cd target-repo
                             git config user.email "khannashiv94@gmail.com"
                             git config user.name "Shiv"
 
-                            git add Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml
+                            git add Project-2/python-jenkins-argocd-k8s/deploy/*
                             git commit -m "Updated the deploy.yaml along with this copying pod.yaml as well as service.yaml | Jenkins Pipeline" || echo "Nothing to commit"
                             git push origin main || echo "Nothing to push"
                         '''                        
