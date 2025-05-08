@@ -42,12 +42,13 @@ pipeline {
                     echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
                     echo 'Push to Repo'
-                    docker push khannashiv/cicd-e2e:${BUILD_NUMBER}
+                    docker push khannashiv/todoapp:${BUILD_NUMBER}
                     '''
                     }
                 }
             }
         }
+        
         stage('Checkout K8S manifest SCM'){
             steps {
                 git credentialsId: 'Git-auth-token', 
