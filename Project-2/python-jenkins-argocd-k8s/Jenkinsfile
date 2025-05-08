@@ -27,7 +27,7 @@ pipeline {
                     echo 'Buid Docker Image'
                     ls -al /var/lib/jenkins/workspace/python-todo-app/
                     pwd
-                    docker build -t khannashiv/cicd-e2e:${BUILD_NUMBER} -f Project-2/python-jenkins-argocd-k8s/Dockerfile .
+                    docker build -t khannashiv/todoapp:${BUILD_NUMBER} -f Project-2/python-jenkins-argocd-k8s/Dockerfile .
                     '''
                 }
             }
