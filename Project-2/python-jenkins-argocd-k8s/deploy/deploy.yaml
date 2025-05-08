@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: todo
-        image: khannashiv/todo-app:ReplaceImageTag
+        image: khannashiv/todoapp:ReplaceImageTag
         ports:
         - containerPort: 8000
