@@ -79,8 +79,12 @@ pipeline {
 
                             sed -i "s/v1/${BUILD_NUMBER}/g" "$DEPLOY_YAML_PATH"
                             sed -i "s/v1/${BUILD_NUMBER}/g" "$POD_YAML_PATH"
+                            sed -i "s/v1/${BUILD_NUMBER}/g" "$SERVICE_YAML_PATH"
+
+                            echo "Printing the udpated build number for manifest files."
                             cat "$DEPLOY_YAML_PATH"
                             cat "$POD_YAML_PATH"
+                            cat "$SERVICE_YAML_PATH"
 
                             echo "Copying updated deploy.yaml to target repo"
                             mkdir -p target-repo/Project-2/python-jenkins-argocd-k8s/deploy
