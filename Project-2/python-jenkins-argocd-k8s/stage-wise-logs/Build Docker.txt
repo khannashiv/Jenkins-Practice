@@ -1,0 +1,104 @@
++ echo Buid Docker Image
+Buid Docker Image
++ ls -al /var/lib/jenkins/workspace/python-todo-app/
+total 20
+drwxr-xr-x 5 jenkins jenkins 4096 May  8 14:28 .
+drwxr-xr-x 6 jenkins jenkins 4096 May  7 12:18 ..
+drwxr-xr-x 8 jenkins jenkins 4096 May  8 14:28 .git
+drwxr-xr-x 3 jenkins jenkins 4096 May  8 14:28 Project-1
+drwxr-xr-x 5 jenkins jenkins 4096 May  8 14:28 Project-2
++ pwd
+/var/lib/jenkins/workspace/python-todo-app
++ docker build -t khannashiv/todoapp:34 -f Project-2/python-jenkins-argocd-k8s/Dockerfile .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  10.64MB
+Step 1/6 : FROM python:3.11
+3.11: Pulling from library/python
+cf05a52c0235: Pulling fs layer
+63964a8518f5: Pulling fs layer
+ca513cad200b: Pulling fs layer
+c187b51b626e: Pulling fs layer
+d088dc1e56f8: Pulling fs layer
+52f7ba6af90d: Pulling fs layer
+77802a86d570: Pulling fs layer
+d088dc1e56f8: Waiting
+52f7ba6af90d: Waiting
+77802a86d570: Waiting
+c187b51b626e: Waiting
+63964a8518f5: Verifying Checksum
+63964a8518f5: Download complete
+ca513cad200b: Verifying Checksum
+ca513cad200b: Download complete
+d088dc1e56f8: Verifying Checksum
+d088dc1e56f8: Download complete
+cf05a52c0235: Verifying Checksum
+cf05a52c0235: Download complete
+77802a86d570: Verifying Checksum
+77802a86d570: Download complete
+52f7ba6af90d: Verifying Checksum
+52f7ba6af90d: Download complete
+c187b51b626e: Verifying Checksum
+c187b51b626e: Download complete
+cf05a52c0235: Pull complete
+63964a8518f5: Pull complete
+ca513cad200b: Pull complete
+c187b51b626e: Pull complete
+d088dc1e56f8: Pull complete
+52f7ba6af90d: Pull complete
+77802a86d570: Pull complete
+Digest: sha256:2d6676523b9052699d536b6dd7396a19499a0bea78975a2c0c7c49b538b6fbd2
+Status: Downloaded newer image for python:3.11
+ ---> e637127368b0
+Step 2/6 : RUN pip install django==3.2
+ ---> Running in 82eac2b45130
+Collecting django==3.2
+  Downloading Django-3.2-py3-none-any.whl.metadata (3.9 kB)
+Collecting asgiref<4,>=3.3.2 (from django==3.2)
+  Downloading asgiref-3.8.1-py3-none-any.whl.metadata (9.3 kB)
+Collecting pytz (from django==3.2)
+  Downloading pytz-2025.2-py2.py3-none-any.whl.metadata (22 kB)
+Collecting sqlparse>=0.2.2 (from django==3.2)
+  Downloading sqlparse-0.5.3-py3-none-any.whl.metadata (3.9 kB)
+Downloading Django-3.2-py3-none-any.whl (7.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.9/7.9 MB 65.3 MB/s eta 0:00:00
+Downloading asgiref-3.8.1-py3-none-any.whl (23 kB)
+Downloading sqlparse-0.5.3-py3-none-any.whl (44 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.4/44.4 kB 7.3 MB/s eta 0:00:00
+Downloading pytz-2025.2-py2.py3-none-any.whl (509 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 509.2/509.2 kB 65.6 MB/s eta 0:00:00
+Installing collected packages: pytz, sqlparse, asgiref, django
+Successfully installed asgiref-3.8.1 django-3.2 pytz-2025.2 sqlparse-0.5.3
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0m[91m
+[notice] A new release of pip is available: 24.0 -> 25.1.1
+[notice] To update, run: pip install --upgrade pip
+[0m ---> Removed intermediate container 82eac2b45130
+ ---> 4fbd0566195e
+Step 3/6 : COPY . /app/
+ ---> 904ffdfb4903
+Step 4/6 : RUN python /app/Project-2/python-jenkins-argocd-k8s/manage.py migrate
+ ---> Running in a96c8409d2d2
+[91mSystem check identified some issues:
+
+WARNINGS:
+todos.Todo: (models.W042) Auto-created primary key used when not defining a primary key type, by default 'django.db.models.AutoField'.
+	HINT: Configure the DEFAULT_AUTO_FIELD setting or the TodosConfig.default_auto_field attribute to point to a subclass of AutoField, e.g. 'django.db.models.BigAutoField'.
+[0mOperations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions, todos
+Running migrations:
+  No migrations to apply.
+ ---> Removed intermediate container a96c8409d2d2
+ ---> 6c93d694c1d0
+Step 5/6 : EXPOSE 8000
+ ---> Running in d5aadc45840f
+ ---> Removed intermediate container d5aadc45840f
+ ---> bed7695a9044
+Step 6/6 : CMD ["python", "/app/Project-2/python-jenkins-argocd-k8s/manage.py", "runserver", "0.0.0.0:8000"]
+ ---> Running in 6034885a39b5
+ ---> Removed intermediate container 6034885a39b5
+ ---> b9f8c7a31f9b
+Successfully built b9f8c7a31f9b
+Successfully tagged khannashiv/todoapp:34

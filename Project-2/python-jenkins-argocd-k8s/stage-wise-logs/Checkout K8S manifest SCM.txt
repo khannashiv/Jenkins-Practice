@@ -1,0 +1,18 @@
+The recommended git tool is: NONE
+Warning: CredentialId "Git-auth-token" could not be found.
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/python-todo-app/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/khannashiv/CICD-manifests # timeout=10
+Fetching upstream changes from https://github.com/khannashiv/CICD-manifests
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/khannashiv/CICD-manifests +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 609c125165dfab55a444760c9a79e99123ed4604 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 609c125165dfab55a444760c9a79e99123ed4604 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D main # timeout=10
+ > git checkout -b main 609c125165dfab55a444760c9a79e99123ed4604 # timeout=10
+Commit message: "Updated the deploy.yaml along with this copying pod.yaml as well as service.yaml | Jenkins Pipeline"
+ > git rev-list --no-walk 4bcef7d71ab2d354045f8f37f67c3a31b42f0c94 # timeout=10

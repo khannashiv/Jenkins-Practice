@@ -1,0 +1,337 @@
+Started by user admin
+Obtained Project-2/python-jenkins-argocd-k8s/Jenkinsfile from git https://github.com/khannashiv/Jenkins-Practice
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/python-todo-app
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/python-todo-app/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/khannashiv/Jenkins-Practice # timeout=10
+Fetching upstream changes from https://github.com/khannashiv/Jenkins-Practice
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/khannashiv/Jenkins-Practice +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision a2a953669eb6b5368578c10196088630b21e563b (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f a2a953669eb6b5368578c10196088630b21e563b # timeout=10
+Commit message: "test"
+ > git rev-list --no-walk cfd23671955e3bc97982fa2eed4a558aab9edf08 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] git
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+Warning: CredentialId "Git-auth-token" could not be found.
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/python-todo-app/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/khannashiv/Jenkins-Practice # timeout=10
+Fetching upstream changes from https://github.com/khannashiv/Jenkins-Practice
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/khannashiv/Jenkins-Practice +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision a2a953669eb6b5368578c10196088630b21e563b (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f a2a953669eb6b5368578c10196088630b21e563b # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D main # timeout=10
+ > git checkout -b main a2a953669eb6b5368578c10196088630b21e563b # timeout=10
+Commit message: "test"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build Docker)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ echo Buid Docker Image
+Buid Docker Image
++ ls -al /var/lib/jenkins/workspace/python-todo-app/
+total 20
+drwxr-xr-x 5 jenkins jenkins 4096 May  8 14:28 .
+drwxr-xr-x 6 jenkins jenkins 4096 May  7 12:18 ..
+drwxr-xr-x 8 jenkins jenkins 4096 May  8 14:28 .git
+drwxr-xr-x 3 jenkins jenkins 4096 May  8 14:28 Project-1
+drwxr-xr-x 5 jenkins jenkins 4096 May  8 14:28 Project-2
++ pwd
+/var/lib/jenkins/workspace/python-todo-app
++ docker build -t khannashiv/todoapp:34 -f Project-2/python-jenkins-argocd-k8s/Dockerfile .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  10.64MB
+
+Step 1/6 : FROM python:3.11
+3.11: Pulling from library/python
+cf05a52c0235: Pulling fs layer
+63964a8518f5: Pulling fs layer
+ca513cad200b: Pulling fs layer
+c187b51b626e: Pulling fs layer
+d088dc1e56f8: Pulling fs layer
+52f7ba6af90d: Pulling fs layer
+77802a86d570: Pulling fs layer
+d088dc1e56f8: Waiting
+52f7ba6af90d: Waiting
+77802a86d570: Waiting
+c187b51b626e: Waiting
+63964a8518f5: Verifying Checksum
+63964a8518f5: Download complete
+ca513cad200b: Verifying Checksum
+ca513cad200b: Download complete
+d088dc1e56f8: Verifying Checksum
+d088dc1e56f8: Download complete
+cf05a52c0235: Verifying Checksum
+cf05a52c0235: Download complete
+77802a86d570: Verifying Checksum
+77802a86d570: Download complete
+52f7ba6af90d: Verifying Checksum
+52f7ba6af90d: Download complete
+c187b51b626e: Verifying Checksum
+c187b51b626e: Download complete
+cf05a52c0235: Pull complete
+63964a8518f5: Pull complete
+ca513cad200b: Pull complete
+c187b51b626e: Pull complete
+d088dc1e56f8: Pull complete
+52f7ba6af90d: Pull complete
+77802a86d570: Pull complete
+Digest: sha256:2d6676523b9052699d536b6dd7396a19499a0bea78975a2c0c7c49b538b6fbd2
+Status: Downloaded newer image for python:3.11
+ ---> e637127368b0
+Step 2/6 : RUN pip install django==3.2
+ ---> Running in 82eac2b45130
+Collecting django==3.2
+  Downloading Django-3.2-py3-none-any.whl.metadata (3.9 kB)
+Collecting asgiref<4,>=3.3.2 (from django==3.2)
+  Downloading asgiref-3.8.1-py3-none-any.whl.metadata (9.3 kB)
+Collecting pytz (from django==3.2)
+  Downloading pytz-2025.2-py2.py3-none-any.whl.metadata (22 kB)
+Collecting sqlparse>=0.2.2 (from django==3.2)
+  Downloading sqlparse-0.5.3-py3-none-any.whl.metadata (3.9 kB)
+Downloading Django-3.2-py3-none-any.whl (7.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.9/7.9 MB 65.3 MB/s eta 0:00:00
+Downloading asgiref-3.8.1-py3-none-any.whl (23 kB)
+Downloading sqlparse-0.5.3-py3-none-any.whl (44 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.4/44.4 kB 7.3 MB/s eta 0:00:00
+Downloading pytz-2025.2-py2.py3-none-any.whl (509 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 509.2/509.2 kB 65.6 MB/s eta 0:00:00
+Installing collected packages: pytz, sqlparse, asgiref, django
+Successfully installed asgiref-3.8.1 django-3.2 pytz-2025.2 sqlparse-0.5.3
+[91mWARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+[0m[91m
+[notice] A new release of pip is available: 24.0 -> 25.1.1
+[notice] To update, run: pip install --upgrade pip
+[0m ---> Removed intermediate container 82eac2b45130
+ ---> 4fbd0566195e
+Step 3/6 : COPY . /app/
+ ---> 904ffdfb4903
+Step 4/6 : RUN python /app/Project-2/python-jenkins-argocd-k8s/manage.py migrate
+ ---> Running in a96c8409d2d2
+[91mSystem check identified some issues:
+
+WARNINGS:
+todos.Todo: (models.W042) Auto-created primary key used when not defining a primary key type, by default 'django.db.models.AutoField'.
+	HINT: Configure the DEFAULT_AUTO_FIELD setting or the TodosConfig.default_auto_field attribute to point to a subclass of AutoField, e.g. 'django.db.models.BigAutoField'.
+[0mOperations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions, todos
+Running migrations:
+  No migrations to apply.
+ ---> Removed intermediate container a96c8409d2d2
+ ---> 6c93d694c1d0
+Step 5/6 : EXPOSE 8000
+ ---> Running in d5aadc45840f
+ ---> Removed intermediate container d5aadc45840f
+ ---> bed7695a9044
+Step 6/6 : CMD ["python", "/app/Project-2/python-jenkins-argocd-k8s/manage.py", "runserver", "0.0.0.0:8000"]
+ ---> Running in 6034885a39b5
+ ---> Removed intermediate container 6034885a39b5
+ ---> b9f8c7a31f9b
+Successfully built b9f8c7a31f9b
+Successfully tagged khannashiv/todoapp:34
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Push the artifacts)
+[Pipeline] withCredentials
+Masking supported pattern matches of $DOCKER_PASS
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ echo Login to Docker Hub
+Login to Docker Hub
++ echo ****
++ docker login -u khannashiv --password-stdin
+WARNING! Your password will be stored unencrypted in /var/lib/jenkins/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
++ echo Push to Repo
+Push to Repo
++ docker push khannashiv/todoapp:34
+The push refers to repository [docker.io/khannashiv/todoapp]
+270d81de9f69: Preparing
+a772eeddf48b: Preparing
+b6a2ff48af27: Preparing
+2a4c2cd429cd: Preparing
+0ea78469ed45: Preparing
+73aeec997a3f: Preparing
+bf9c09fb6f3a: Preparing
+fcbb8c0ae5d6: Preparing
+8ce3e08e661a: Preparing
+247fffb7158d: Preparing
+73aeec997a3f: Waiting
+bf9c09fb6f3a: Waiting
+fcbb8c0ae5d6: Waiting
+8ce3e08e661a: Waiting
+247fffb7158d: Waiting
+0ea78469ed45: Layer already exists
+2a4c2cd429cd: Layer already exists
+bf9c09fb6f3a: Layer already exists
+73aeec997a3f: Layer already exists
+fcbb8c0ae5d6: Layer already exists
+8ce3e08e661a: Layer already exists
+247fffb7158d: Layer already exists
+270d81de9f69: Pushed
+a772eeddf48b: Pushed
+b6a2ff48af27: Pushed
+34: digest: sha256:330ceaeb15492426f550a5adeca00d23502cd35858797559cb7741c263db7007 size: 2430
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Checkout K8S manifest SCM)
+[Pipeline] git
+The recommended git tool is: NONE
+Warning: CredentialId "Git-auth-token" could not be found.
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/python-todo-app/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/khannashiv/CICD-manifests # timeout=10
+Fetching upstream changes from https://github.com/khannashiv/CICD-manifests
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/khannashiv/CICD-manifests +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 609c125165dfab55a444760c9a79e99123ed4604 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 609c125165dfab55a444760c9a79e99123ed4604 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D main # timeout=10
+ > git checkout -b main 609c125165dfab55a444760c9a79e99123ed4604 # timeout=10
+Commit message: "Updated the deploy.yaml along with this copying pod.yaml as well as service.yaml | Jenkins Pipeline"
+ > git rev-list --no-walk 4bcef7d71ab2d354045f8f37f67c3a31b42f0c94 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Update K8S manifest & push to Repo)
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] withCredentials
+Masking supported pattern matches of $GITHUB_TOKEN
+[Pipeline] {
+[Pipeline] sh
++ echo Cloning target repo...
+Cloning target repo...
++ rm -rf target-repo
++ git clone https://****@github.com/khannashiv/CICD-manifests.git target-repo
+Cloning into 'target-repo'...
++ echo Cloning source repo (Jenkins-Practice)...
+Cloning source repo (Jenkins-Practice)...
++ git clone https://github.com/khannashiv/Jenkins-Practice.git src-repo
+Cloning into 'src-repo'...
++ echo Modifying deploy.yaml in source repo
+Modifying deploy.yaml in source repo
++ POD_YAML_PATH=src-repo/Project-2/python-jenkins-argocd-k8s/deploy/pod.yaml
++ SERVICE_YAML_PATH=src-repo/Project-2/python-jenkins-argocd-k8s/deploy/service.yaml
++ DEPLOY_YAML_PATH=src-repo/Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml
++ sed -i s/ReplaceImageTag/34/g src-repo/Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml
++ sed -i s/ReplaceImageTag/34/g src-repo/Project-2/python-jenkins-argocd-k8s/deploy/pod.yaml
++ echo Printing the udpated build number for manifest files.
+Printing the udpated build number for manifest files.
++ cat src-repo/Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: todo
+        image: khannashiv/todoapp:34
+        ports:
+        - containerPort: 8000
++ cat src-repo/Project-2/python-jenkins-argocd-k8s/deploy/pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: todo-app
+spec:
+  containers:
+  - name: todo-app
+    image: khannashiv/todoapp:34
+    ports:
+    - containerPort: 8000
++ echo Copying updated deploy.yaml to target repo
+Copying updated deploy.yaml to target repo
++ mkdir -p target-repo/Project-2/python-jenkins-argocd-k8s/deploy
++ cp src-repo/Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
++ cp src-repo/Project-2/python-jenkins-argocd-k8s/deploy/service.yaml target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
++ cp src-repo/Project-2/python-jenkins-argocd-k8s/deploy/pod.yaml target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
++ cd target-repo
++ git config user.email khannashiv94@gmail.com
++ git config user.name Shiv
++ git add Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml Project-2/python-jenkins-argocd-k8s/deploy/pod.yaml Project-2/python-jenkins-argocd-k8s/deploy/service.yaml
++ git commit -m Updated the deploy.yaml along with this copying pod.yaml as well as service.yaml | Jenkins Pipeline
+[main aa11087] Updated the deploy.yaml along with this copying pod.yaml as well as service.yaml | Jenkins Pipeline
+ 2 files changed, 2 insertions(+), 2 deletions(-)
++ git push origin main
+To https://github.com/khannashiv/CICD-manifests.git
+   609c125..aa11087  main -> main
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

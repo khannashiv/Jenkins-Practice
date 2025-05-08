@@ -1,0 +1,39 @@
++ echo Login to Docker Hub
+Login to Docker Hub
++ echo ****
++ docker login -u khannashiv --password-stdin
+WARNING! Your password will be stored unencrypted in /var/lib/jenkins/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
++ echo Push to Repo
+Push to Repo
++ docker push khannashiv/todoapp:34
+The push refers to repository [docker.io/khannashiv/todoapp]
+270d81de9f69: Preparing
+a772eeddf48b: Preparing
+b6a2ff48af27: Preparing
+2a4c2cd429cd: Preparing
+0ea78469ed45: Preparing
+73aeec997a3f: Preparing
+bf9c09fb6f3a: Preparing
+fcbb8c0ae5d6: Preparing
+8ce3e08e661a: Preparing
+247fffb7158d: Preparing
+73aeec997a3f: Waiting
+bf9c09fb6f3a: Waiting
+fcbb8c0ae5d6: Waiting
+8ce3e08e661a: Waiting
+247fffb7158d: Waiting
+0ea78469ed45: Layer already exists
+2a4c2cd429cd: Layer already exists
+bf9c09fb6f3a: Layer already exists
+73aeec997a3f: Layer already exists
+fcbb8c0ae5d6: Layer already exists
+8ce3e08e661a: Layer already exists
+247fffb7158d: Layer already exists
+270d81de9f69: Pushed
+a772eeddf48b: Pushed
+b6a2ff48af27: Pushed
+34: digest: sha256:330ceaeb15492426f550a5adeca00d23502cd35858797559cb7741c263db7007 size: 2430

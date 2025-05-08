@@ -1,0 +1,67 @@
++ echo Cloning target repo...
+Cloning target repo...
++ rm -rf target-repo
++ git clone https://****@github.com/khannashiv/CICD-manifests.git target-repo
+Cloning into 'target-repo'...
++ echo Cloning source repo (Jenkins-Practice)...
+Cloning source repo (Jenkins-Practice)...
++ git clone https://github.com/khannashiv/Jenkins-Practice.git src-repo
+Cloning into 'src-repo'...
++ echo Modifying deploy.yaml in source repo
+Modifying deploy.yaml in source repo
++ POD_YAML_PATH=src-repo/Project-2/python-jenkins-argocd-k8s/deploy/pod.yaml
++ SERVICE_YAML_PATH=src-repo/Project-2/python-jenkins-argocd-k8s/deploy/service.yaml
++ DEPLOY_YAML_PATH=src-repo/Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml
++ sed -i s/ReplaceImageTag/34/g src-repo/Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml
++ sed -i s/ReplaceImageTag/34/g src-repo/Project-2/python-jenkins-argocd-k8s/deploy/pod.yaml
++ echo Printing the udpated build number for manifest files.
+Printing the udpated build number for manifest files.
++ cat src-repo/Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: todo
+        image: khannashiv/todoapp:34
+        ports:
+        - containerPort: 8000
++ cat src-repo/Project-2/python-jenkins-argocd-k8s/deploy/pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: todo-app
+spec:
+  containers:
+  - name: todo-app
+    image: khannashiv/todoapp:34
+    ports:
+    - containerPort: 8000
++ echo Copying updated deploy.yaml to target repo
+Copying updated deploy.yaml to target repo
++ mkdir -p target-repo/Project-2/python-jenkins-argocd-k8s/deploy
++ cp src-repo/Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
++ cp src-repo/Project-2/python-jenkins-argocd-k8s/deploy/service.yaml target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
++ cp src-repo/Project-2/python-jenkins-argocd-k8s/deploy/pod.yaml target-repo/Project-2/python-jenkins-argocd-k8s/deploy/
++ cd target-repo
++ git config user.email khannashiv94@gmail.com
++ git config user.name Shiv
++ git add Project-2/python-jenkins-argocd-k8s/deploy/deploy.yaml Project-2/python-jenkins-argocd-k8s/deploy/pod.yaml Project-2/python-jenkins-argocd-k8s/deploy/service.yaml
++ git commit -m Updated the deploy.yaml along with this copying pod.yaml as well as service.yaml | Jenkins Pipeline
+[main aa11087] Updated the deploy.yaml along with this copying pod.yaml as well as service.yaml | Jenkins Pipeline
+ 2 files changed, 2 insertions(+), 2 deletions(-)
++ git push origin main
+To https://github.com/khannashiv/CICD-manifests.git
+   609c125..aa11087  main -> main
