@@ -35,6 +35,8 @@
             . IMAGE_TAG could be used later to tag Docker images or version your build artifacts.
    -->
 
+![](images/Pipeline-stage-1.PNG "Pipeline-stage-1")
+![](images/Pipeline-stage-2.PNG "Pipeline-stage-2")
 
 ```groovy
    stages {
