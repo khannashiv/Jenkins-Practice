@@ -278,3 +278,4 @@
  - ![](images/ArgoCD-5.PNG "ArgoCD-5")
  - ![](images/ArgoCD-6.PNG "ArgoCD-6")
  - ![](images/ArgoCD-7.PNG "ArgoCD-7")
+ - ![](images/App-outcome-1.PNG "App-outcome-1")
