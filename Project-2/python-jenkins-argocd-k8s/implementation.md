@@ -122,7 +122,11 @@
 
    ![](images/Pipeline-stage-5.PNG "Pipeline-stage-5")
    ![](images/Pipeline-stage-6.PNG "Pipeline-stage-6")
-  
+
+   ![](images/Docker-hub-1.PNG "Docker-hub-1")
+   ![](images/Docker-hub-2.PNG "Docker-hub-2")
+   ![](images/Docker-hub-3.PNG "Docker-hub-3")
+
    <!-- Explaination of Push as well as Checkout K8S manifest SCM .
     
         -- withCredentials block:
@@ -206,10 +210,20 @@
  ![](images/Pipeline-stage-8.PNG "Pipeline-stage-8")
  ![](images/Pipeline-stage-9.PNG "Pipeline-stage-9")
 
+ ![](images/Node-agent-1.PNG "Node-agent-1")
+ ![](images/Node-agent-2.PNG "Node-agent-2")
+ ![](images/Node-agent-3.PNG "Node-agent-3")
+ ![](images/Node-agent-4.PNG "Node-agent-4")
+ ![](images/Node-agent-5.PNG "Node-agent-5")
+
+ ![](images/Git-manifest-repo-1.PNG "Git-manifest-repo-1")
+ ![](images/Git-manifest-repo-2.PNG "Git-manifest-repo-2")
+ ![](images/Git-manifest-repo-3.PNG "Git-manifest-repo-3")
+ 
    <!-- Explaination of Update K8S manifest & push to Repo
         
-        NOTE : This git repository i.e. https://github.com/khannashiv/CICD-manifests initially is empty i.e. it is not holding any manifest files.
-
+        NOTE : This git repository i.e. https://github.com/khannashiv/CICD-manifests initially is empty i.e. it is not holding any manifest files. Also src repo as well as target repo these are directories will get created on Jenkins node /agent on the host VM. These are kind of temporary directory or we can call it placeholder directory which will holds respective data which falls under it after cloning the repository .These are only seen on the VM which is my Jenkins worker node in this case .These ( src-repo and target-repo folders ) will not be visible inside git.
+         
         -- This Jenkins pipeline stage automates the process of updating Kubernetes manifest files with the current build number, then pushing those updated files to a GitHub repo used for Kubernetes deployments.
 
         -- Stage: Update K8S manifest & push to Repo .
@@ -248,8 +262,7 @@
                         - Committing those updates
                         - Pushing them to a GitHub repo used for Kubernetes deployment
     -->
-
-
+ 
 ## Here we have completed CI (Continous integration) part from implementation prospective & we are going to implement CD (Continous delivery) part .
 
 **For CD process we have followed same steps as implemented for spring boot application whose repository path is : https://github.com/khannashiv/Jenkins-Practice/blob/main/Project-1/java-maven-sonar-argocd-helm-k8s/Implementation.md**
