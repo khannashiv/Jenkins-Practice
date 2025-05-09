@@ -1,4 +1,4 @@
-## Configuring the Pipeline
+## Configuring the Pipeline || Implementation of CI Part .
 
 - **Jenkinsfile**: Add the pipeline script in a file named `Jenkinsfile` at the git repository whose absolute path is Jenkins-Practice/Project-2/python-jenkins-argocd-k8's/JenkinsFile. Below we are explaining each code block which is part of Jenkins pipeine.
 
@@ -36,7 +36,6 @@
    -->
 
 ![](images/Pipeline-stage-1.PNG "Pipeline-stage-1")
-![](images/Pipeline-stage-2.PNG "Pipeline-stage-2")
 
 ```groovy
    stages {
@@ -63,6 +62,10 @@
         }
    }
    ```
+
+   ![](images/Pipeline-stage-2.PNG "Pipeline-stage-2")
+   ![](images/Pipeline-stage-3.PNG "Pipeline-stage-3")
+   ![](images/Pipeline-stage-4.PNG "Pipeline-stage-4")
 
    <!-- Explaination of Checkout as well as build stage.
 
@@ -117,6 +120,9 @@
    }
    ```
 
+   ![](images/Pipeline-stage-5.PNG "Pipeline-stage-5")
+   ![](images/Pipeline-stage-6.PNG "Pipeline-stage-6")
+  
    <!-- Explaination of Push as well as Checkout K8S manifest SCM .
     
         -- withCredentials block:
@@ -196,6 +202,9 @@
    }
    ```
 
+ ![](images/Pipeline-stage-7.PNG "Pipeline-stage-7")
+ ![](images/Pipeline-stage-8.PNG "Pipeline-stage-8")
+ ![](images/Pipeline-stage-9.PNG "Pipeline-stage-9")
 
    <!-- Explaination of Update K8S manifest & push to Repo
         
