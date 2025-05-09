@@ -216,8 +216,8 @@
             -- Goal : Update image tags in YAML files (used for Kubernetes deployment) with the latest build number, and push those changes to the CICD-manifests GitHub repository.
 
         -- environment { ... } : Sets two environment variables:
-               -- GIT_REPO_NAME: Name of the target GitHub repo (where updated files will be pushed) .
-               -- GIT_USER_NAME: GitHub username used in the Git clone URL .
+            -- GIT_REPO_NAME: Name of the target GitHub repo (where updated files will be pushed) .
+            -- GIT_USER_NAME: GitHub username used in the Git clone URL .
 
         -- withCredentials(...) : Uses a GitHub token (from Jenkins credentials) to authenticate private repo access securely.
 
@@ -243,7 +243,6 @@
                 - Pushes the updated Kubernetes manifests back to the GitHub repo (CICD-manifests), so that: They reflect the new Docker image version .
 
         Summary
-
                 -- This stage automates versioning of your Kubernetes deployment files by doing following steps .
                         - Inserting the current build number
                         - Committing those updates
