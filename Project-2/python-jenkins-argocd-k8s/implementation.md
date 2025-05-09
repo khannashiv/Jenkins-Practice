@@ -249,3 +249,20 @@
                         - Committing those updates
                         - Pushing them to a GitHub repo used for Kubernetes deployment
     -->
+
+
+## Here we have completed CI (Continous integration) part from implementation prospective & we are going to implement CD (Continous delivery) part .
+
+**For CD process we have followed same steps as implemented for spring boot application whose repository path is : https://github.com/khannashiv/Jenkins-Practice/blob/main/Project-1/java-maven-sonar-argocd-helm-k8s/Implementation.md**
+
+<!--
+ - We are attaching final outcomes of python application deployed via ArgoCD .
+-->
+
+ - ![](images/ArgoCD-1.PNG "ArgoCD-1")
+ - ![](images/ArgoCD-2.PNG "ArgoCD-2")
+ - ![](images/ArgoCD-3.PNG "ArgoCD-3")
+ - ![](images/ArgoCD-4.PNG "ArgoCD-4")
+ - ![](images/ArgoCD-5.PNG "ArgoCD-5")
+ - ![](images/ArgoCD-6.PNG "ArgoCD-6")
+ - ![](images/ArgoCD-7.PNG "ArgoCD-7")
