@@ -2,7 +2,7 @@
 
 # Decalring sone of the required variables.
 APP_NAME="textanalyzer"
-APP_DIR="/home/ubuntu/text-analyzer-app"
+APP_DIR="/home/ubuntu/Jenkins-Practice/Project-3/text-analyzer-app"
 VENV_DIR="$APP_DIR/venv"
 SOCK_PATH="$APP_DIR/${APP_NAME}.sock"
 SERVICE_PATH="/etc/systemd/system/${APP_NAME}.service"
