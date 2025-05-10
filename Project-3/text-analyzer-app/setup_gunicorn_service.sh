@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Config
+# Decalring sone of the required variables.
 APP_NAME="textanalyzer"
 APP_DIR="/home/ubuntu/text-analyzer-app"
 VENV_DIR="$APP_DIR/venv"
@@ -11,8 +11,10 @@ GROUP="www-data"
 GUNICORN_EXEC="$VENV_DIR/bin/gunicorn"
 WSGI_MODULE="wsgi:app"
 
-echo "Creating systemd service for $APP_NAME..."
+# Creating systemd service for persistent Gunicorn process.
+# This will allow the Gunicorn server to run in the background and restart on failure.
 
+echo "Creating systemd service for $APP_NAME..."
 sudo tee $SERVICE_PATH > /dev/null <<EOF
 [Unit]
 Description=Gunicorn service for Flask $APP_NAME
