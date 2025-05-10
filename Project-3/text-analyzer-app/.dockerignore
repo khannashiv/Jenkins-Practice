@@ -1,0 +1,20 @@
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments (we rebuild inside Docker)
+venv/
+
+# Systemd/Gunicorn service scripts (not used inside Docker)
+setup_gunicorn_service.sh
+
+# Git and versioning
+.git/
+.gitignore
+.gitattributes
+
+# Misc
+*.log
+README.md
