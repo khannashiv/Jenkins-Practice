@@ -44,7 +44,7 @@ pipeline {
 
         stage('Docker login and Push the artifacts'){
            steps{
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', uservariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKER_PASS')]) {
                 script{
                     sh '''
                     echo 'Login to Docker Hub'
