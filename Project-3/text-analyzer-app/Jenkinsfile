@@ -8,8 +8,9 @@ pipeline {
 
     environment {
         DOCKERHUB_USER = 'khannashiv'
-        IMAGE_NAME = 'text-analyzer'
-        IMAGE_TAG = "${BUILD_NUMBER}"
+        IMAGE_NAME     = 'text-analyzer'
+        IMAGE_TAG      = "${BUILD_NUMBER}"
+        IMAGE_FULL     = "${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
     }
 
     stages {
@@ -29,7 +30,7 @@ pipeline {
                     echo 'Buid Docker Image'
                     ls -al /var/lib/jenkins/workspace/Test/Project-3/text-analyzer-app/
                     pwd
-                    docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} -f Project-3/text-analyzer-app/Dockerfile Project-3/text-analyzer-app
+                    docker build -t $IMAGE_FULL -f Project-3/text-analyzer-app/Dockerfile Project-3/text-analyzer-app
                     '''
                 }
             }
@@ -51,17 +52,10 @@ pipeline {
                     echo "$DOCKER_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
 
                     echo 'Push to Repo'
-                    docker push ${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}
+                    docker push $IMAGE_FULL
                     '''
                     }
                 }
-            }
-        }
-
-        stage('Cleanup') {
-            steps {
-                echo 'Cleaning up unused Docker images...'
-                sh 'docker rmi ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} || true'
             }
         }
 
