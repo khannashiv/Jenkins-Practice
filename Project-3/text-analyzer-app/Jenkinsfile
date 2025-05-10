@@ -44,14 +44,14 @@ pipeline {
 
         stage('Docker login and Push the artifacts'){
            steps{
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', passwordVariable: 'DOCKER_PASS')]) {
                 script{
                     sh '''
                     echo 'Login to Docker Hub'
-                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                    echo "$DOCKER_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
 
                     echo 'Push to Repo'
-                    docker push ${DOCKER_USER}/${IMAGE_NAME}:${BUILD_NUMBER}
+                    docker push ${DOCKERHUB_USER}/${IMAGE_NAME}:${BUILD_NUMBER}
                     '''
                     }
                 }
@@ -61,7 +61,7 @@ pipeline {
         stage('Cleanup') {
             steps {
                 echo 'Cleaning up unused Docker images...'
-                sh "docker rmi ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} || true"
+                sh 'docker rmi ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} || true'
             }
         }
 
