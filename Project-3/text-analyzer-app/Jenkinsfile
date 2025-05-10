@@ -28,7 +28,7 @@ pipeline {
                 script {
                     sh '''
                     echo 'Buid Docker Image'
-                    ls -al /var/lib/jenkins/workspace/
+                    ls -al /var/lib/jenkins/workspace/Test/Project-3/text-analyzer-app/
                     pwd
                     docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} -f Project-3/text-analyzer-app/Dockerfile .
                     '''
