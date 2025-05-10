@@ -51,7 +51,7 @@ pipeline {
                     echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
                     echo 'Push to Repo'
-                    docker push ${DOCKERHUB_USER}/{IMAGE_NAME}:${BUILD_NUMBER}
+                    docker push ${DOCKER_USER}/${IMAGE_NAME}:${BUILD_NUMBER}
                     '''
                     }
                 }
