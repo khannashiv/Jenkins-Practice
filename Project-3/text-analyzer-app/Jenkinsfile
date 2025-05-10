@@ -1,0 +1,83 @@
+pipeline {
+
+    agent any
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+        }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds')  // Jenkins credentials ID
+        DOCKERHUB_USER = 'khannashiv'
+        IMAGE_NAME = 'text-analyzer'
+        IMAGE_TAG = "${BUILD_NUMBER}"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git credentialsId: 'Git-auth-token',
+                git 'https://github.com/khannashiv/Jenkins-Practice.git',
+                branch: 'main'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh '''
+                    echo 'Buid Docker Image'
+                    ls -al /var/lib/jenkins/workspace/
+                    pwd
+                    docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} -f Project-3/text-analyzer-app/Dockerfile .
+                    '''
+                }
+            }
+        }
+
+        stage('Test Image') {
+            steps {
+                echo 'We will add test stage later.'
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
+                        echo 'Logged in to Docker Hub'
+                    }
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
+                        dockerImage.push()
+                        dockerImage.push('latest') // Optionally push with "latest" tag too
+                    }
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                echo 'Cleaning up unused Docker images...'
+                sh "docker rmi ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} || true"
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo "Build and push successful!"
+        }
+        failure {
+            echo "Build failed. Check logs."
+        }
+    }
+}
