@@ -17,7 +17,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git credentialsId: 'Git-auth-token',
+                git credentialsId: 'GitHub-auth-creds',
                 git 'https://github.com/khannashiv/Jenkins-Practice.git',
                 branch: 'main'
             }
