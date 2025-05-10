@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head><title>Text Analyzer</title></head>
+<body>
+  <h1>Text Analyzer</h1>
+  <form method="post">
+    <textarea name="text" rows="10" cols="50" placeholder="Enter your text here" required></textarea><br>
+    <input type="submit" value="Analyze">
+  </form>
+
+  {% if result %}
+    <h2>Results:</h2>
+    <ul>
+      <li>Word Count: {{ result.word_count }}</li>
+      <li>Character Count (with spaces): {{ result.char_count }}</li>
+      <li>Character Count (no spaces): {{ result.char_count_no_space }}</li>
+      <li>Sentence Count: {{ result.sentence_count }}</li>
+      <li>Most Common Word: "{{ result.common_word }}"</li>
+    </ul>
+  {% endif %}
+</body>
+</html>
