@@ -59,6 +59,14 @@ pipeline {
             }
         }
 
+        stage('Checkout K8S manifest SCM'){
+            steps {
+                git credentialsId: 'GitHub-auth-creds', 
+                url: 'https://github.com/khannashiv/CICD-manifests',
+                branch: 'main'
+            }
+        }
+
     }
 
     post {
