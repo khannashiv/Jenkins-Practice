@@ -1,1 +1,22 @@
+# Always use LF for shell scripts
 *.sh text eol=lf
+
+# Python source files
+*.py text eol=lf
+
+# HTML and templates
+*.html text eol=lf
+*.jinja text eol=lf
+*.jinja2 text eol=lf
+
+# CSS and JS files
+*.css text eol=lf
+*.js  text eol=lf
+
+# Markdown and config
+*.md  text eol=lf
+*.txt text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.ini text eol=lf
+*.conf text eol=lf
