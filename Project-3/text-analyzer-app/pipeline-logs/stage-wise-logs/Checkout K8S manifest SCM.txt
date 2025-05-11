@@ -1,0 +1,18 @@
+The recommended git tool is: NONE
+Warning: CredentialId "GitHub-auth-creds" could not be found.
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Test/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/khannashiv/CICD-manifests # timeout=10
+Fetching upstream changes from https://github.com/khannashiv/CICD-manifests
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/khannashiv/CICD-manifests +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 0940b60a926b644c3b5ca768c66ba94963671173 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 0940b60a926b644c3b5ca768c66ba94963671173 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D main # timeout=10
+ > git checkout -b main 0940b60a926b644c3b5ca768c66ba94963671173 # timeout=10
+Commit message: "Updated the deploy.yaml along with this copying service.yaml | Jenkins Pipeline"
+ > git rev-list --no-walk 672086558cb13fe808443a09819a2eea5eb1f8c3 # timeout=10

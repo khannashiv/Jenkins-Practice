@@ -1,0 +1,33 @@
++ echo Login to Docker Hub
+Login to Docker Hub
++ echo ****
++ docker login -u khannashiv --password-stdin
+WARNING! Your password will be stored unencrypted in /var/lib/jenkins/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
++ echo Push to Repo
+Push to Repo
++ docker push khannashiv/text-analyzer:23
+The push refers to repository [docker.io/khannashiv/text-analyzer]
+06ba818fda29: Preparing
+21c16a37db4e: Preparing
+92ee1960a10b: Preparing
+48787c57dc7b: Preparing
+4bd3cc4c71de: Preparing
+4be1d3802eb7: Preparing
+21649572714d: Preparing
+6c4c763d22d0: Preparing
+4be1d3802eb7: Waiting
+21649572714d: Waiting
+6c4c763d22d0: Waiting
+92ee1960a10b: Layer already exists
+48787c57dc7b: Layer already exists
+21c16a37db4e: Layer already exists
+4bd3cc4c71de: Layer already exists
+21649572714d: Layer already exists
+6c4c763d22d0: Layer already exists
+4be1d3802eb7: Layer already exists
+06ba818fda29: Pushed
+23: digest: sha256:9453abfc3f742d7ee542786d44b35ed66ac010c442df754a267ace615fa0e4b3 size: 1991

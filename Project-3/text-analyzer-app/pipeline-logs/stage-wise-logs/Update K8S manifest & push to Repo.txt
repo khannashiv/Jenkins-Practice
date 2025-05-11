@@ -1,0 +1,53 @@
++ echo Cloning target repo...
+Cloning target repo...
++ rm -rf target-repo
++ git clone https://****@github.com/khannashiv/CICD-manifests.git target-repo
+Cloning into 'target-repo'...
++ echo Cloning source repo (Jenkins-Practice)...
+Cloning source repo (Jenkins-Practice)...
++ rm -rf src-repo
++ git clone https://github.com/khannashiv/Jenkins-Practice.git src-repo
+Cloning into 'src-repo'...
++ echo Modifying deploy.yaml in source repo
+Modifying deploy.yaml in source repo
++ SERVICE_YAML_PATH=src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/service.yml
++ DEPLOY_YAML_PATH=src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/deploy.yml
++ sed -i s/ReplaceImageTag/23/g src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/deploy.yml
++ echo Printing the udpated build number for manifest files.
+Printing the udpated build number for manifest files.
++ cat src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/deploy.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: text-analyzer-app
+  labels:
+    app: text-analyzer-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: text-analyzer-app
+  template:
+    metadata:
+      labels:
+        app: text-analyzer-app
+    spec:
+      containers:
+      - name:  text-analyzer-app
+        image: khannashiv/text-analyzer:23
+        ports:
+        - containerPort: 8000+ echo Copying updated deploy.yaml to target repo
+Copying updated deploy.yaml to target repo
++ mkdir -p target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests
++ cp src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/deploy.yml target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/
++ cp src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/service.yml target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/
++ cd target-repo
++ git config user.email khannashiv94@gmail.com
++ git config user.name Shiv
++ git add Project-3/text-analyzer-app/text-analyzer-app-manifests/deploy.yml Project-3/text-analyzer-app/text-analyzer-app-manifests/service.yml
++ git commit -m Updated the deploy.yaml along with this copying service.yaml | Jenkins Pipeline
+[main ea9e66c] Updated the deploy.yaml along with this copying service.yaml | Jenkins Pipeline
+ 2 files changed, 2 insertions(+), 2 deletions(-)
++ git push origin main
+To https://github.com/khannashiv/CICD-manifests.git
+   0940b60..ea9e66c  main -> main

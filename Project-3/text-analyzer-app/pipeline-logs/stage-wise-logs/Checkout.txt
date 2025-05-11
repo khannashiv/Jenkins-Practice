@@ -1,0 +1,17 @@
+The recommended git tool is: git
+Warning: CredentialId "GitHub-auth-creds" could not be found.
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Test/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/khannashiv/Jenkins-Practice.git # timeout=10
+Fetching upstream changes from https://github.com/khannashiv/Jenkins-Practice.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+ > git fetch --tags --force --progress -- https://github.com/khannashiv/Jenkins-Practice.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 97aec3d42e23f4364898a028f779b4e0884caa6f (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 97aec3d42e23f4364898a028f779b4e0884caa6f # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D main # timeout=10
+ > git checkout -b main 97aec3d42e23f4364898a028f779b4e0884caa6f # timeout=10
+Commit message: "test"
