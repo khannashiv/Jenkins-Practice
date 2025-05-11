@@ -69,6 +69,50 @@ pipeline {
 
     }
 
+    stage('Update K8S manifest & push to Repo'){
+        environment {
+                GIT_REPO_NAME = "CICD-manifests"
+                GIT_USER_NAME = "khannashiv"
+            }
+            steps {
+                script{
+                    withCredentials([string(credentialsId: 'GitHub-auth-creds', variable: 'GITHUB_TOKEN')]) {
+                        sh '''
+                            echo "Cloning target repo..."
+                            rm -rf target-repo
+                            git clone https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git target-repo
+
+                            echo "Cloning source repo (Jenkins-Practice)..."
+                            git clone https://github.com/khannashiv/Jenkins-Practice.git src-repo
+
+                            echo "Modifying deploy.yaml in source repo"
+              
+                            SERVICE_YAML_PATH="src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/service.yml"
+                            DEPLOY_YAML_PATH="src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/deploy.yml"
+
+                            sed -i "s/ReplaceImageTag/${BUILD_NUMBER}/g" "$DEPLOY_YAML_PATH"
+                
+                            echo "Printing the udpated build number for manifest files."
+                            cat "$DEPLOY_YAML_PATH"
+                    
+                            echo "Copying updated deploy.yaml to target repo"
+                            mkdir -p target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests
+                            cp "$DEPLOY_YAML_PATH" target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/
+                            cp "$SERVICE_YAML_PATH" target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/
+
+                            cd target-repo
+                            git config user.email "khannashiv94@gmail.com"
+                            git config user.name "Shiv"
+
+                            git add Project-3/text-analyzer-app/text-analyzer-app-manifests/*
+                            git commit -m "Updated the deploy.yaml along with this copying service.yaml | Jenkins Pipeline" || echo "Nothing to commit"
+                            git push origin main || echo "Nothing to push"
+                        '''                        
+                    }
+                }
+            }
+        }
+
     post {
         success {
             echo "Build and push successful!"
