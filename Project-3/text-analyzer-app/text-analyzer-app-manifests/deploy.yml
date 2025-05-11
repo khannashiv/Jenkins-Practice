@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: text-analyzer-app
+  labels:
+    app: text-analyzer-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: text-analyzer-app
+  template:
+    metadata:
+      labels:
+        app: text-analyzer-app
+    spec:
+      containers:
+      - name:  text-analyzer-app
+        image: khannashiv/text-analyzer:ReplaceImageTag
+        ports:
+        - containerPort: 8000
