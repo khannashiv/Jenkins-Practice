@@ -67,13 +67,11 @@ pipeline {
             }
         }
 
-    }
-
-    stage('Update K8S manifest & push to Repo'){
-        environment {
-                GIT_REPO_NAME = "CICD-manifests"
-                GIT_USER_NAME = "khannashiv"
-            }
+        stage('Update K8S manifest & push to Repo'){
+            environment {
+                    GIT_REPO_NAME = "CICD-manifests"
+                    GIT_USER_NAME = "khannashiv"
+                }
             steps {
                 script{
                     withCredentials([string(credentialsId: 'GitHub-auth-creds', variable: 'GITHUB_TOKEN')]) {
@@ -86,7 +84,7 @@ pipeline {
                             git clone https://github.com/khannashiv/Jenkins-Practice.git src-repo
 
                             echo "Modifying deploy.yaml in source repo"
-              
+            
                             SERVICE_YAML_PATH="src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/service.yml"
                             DEPLOY_YAML_PATH="src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/deploy.yml"
 
