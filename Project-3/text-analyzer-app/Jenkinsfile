@@ -6,11 +6,6 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '2'))
     }
 
-    tools {
-        // Ensure this matches the name given in Global Tool Configuration
-        sonarQubeScanner 'SonarQube Scanner 6.2.1.4610'
-    }
-
     environment {
         DOCKERHUB_USER = 'khannashiv'
         IMAGE_NAME     = 'text-analyzer'
@@ -41,21 +36,13 @@ pipeline {
             }
         }
 
-        stage('Static Code Analysis') {
-            environment {
-                SONAR_URL = "http://54.166.17.173:9000"
-            }
-            steps {
-                withCredentials([string(credentialsId: 'sonarqube_token', variable: 'SONAR_AUTH_TOKEN')]) {
-                    sh '''
-                        cd Project-3/text-analyzer-app/app
-                        sonar-scanner \
-                            -Dsonar.projectKey=text-analyzer \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=${SONAR_URL} \
-                            -Dsonar.login=${SONAR_AUTH_TOKEN}
-                    '''
-                }
+        stage('SonarQube Analysis') {
+            // Replace tool name with the exact name defined in your Global Tool Configuration
+            def scannerHome = tool name: 'SonarQube Scanner 6.2.1.4610', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+
+            // Replace 'SonarQube' with the exact name defined in your SonarQube server configuration
+            withSonarQubeEnv('SonarQube') {
+                sh '${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=text-analyzer -Dsonar.sources=. -Dsonar.host.url=http://54.166.17.173:9000'
             }
         }
 
