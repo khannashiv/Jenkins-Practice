@@ -7,6 +7,11 @@ pipeline {
     }
   }
 
+  tools {
+        // Ensure this matches the name given in Global Tool Configuration
+        sonarQubeScanner 'SonarQube Scanner 6.2.1.4610'
+    }
+
   options {
     skipDefaultCheckout(true) // Disable default SCM checkout to fix permission issues
     buildDiscarder(logRotator(numToKeepStr: '10'))
