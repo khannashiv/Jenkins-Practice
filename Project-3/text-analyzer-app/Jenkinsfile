@@ -40,8 +40,8 @@ pipeline {
                     steps {
                         script {
                                 echo "Testing SonarQube installation visibility..."
-                                def sonarEnv = withSonarQubeEnv('SonarQube') {
-                                echo "SonarQube environment configured properly."
+                                withSonarQubeEnv('SonarQube') {
+                                sh 'sonar-scanner -Dsonar.projectKey=text-analyzer -Dsonar.sources=.'
                             }
                         }
                     }
