@@ -1,127 +1,128 @@
 pipeline {
 
-    agent any
+        agent any
 
-    options {
-        buildDiscarder(logRotator(numToKeepStr: '2'))
-    }
-
-    environment {
-        DOCKERHUB_USER = 'khannashiv'
-        IMAGE_NAME     = 'text-analyzer'
-        IMAGE_TAG      = "${BUILD_NUMBER}"
-        IMAGE_FULL     = "${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
-    }
-
-    stages {
-
-        stage('Checkout') {
-            steps {
-                git credentialsId: 'GitHub-auth-creds',
-                url: 'https://github.com/khannashiv/Jenkins-Practice.git',
-                branch: 'main'
-            }
+        options {
+            buildDiscarder(logRotator(numToKeepStr: '2'))
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh '''
-                    echo 'Buid Docker Image'
-                    ls -al /var/lib/jenkins/workspace/Test/Project-3/text-analyzer-app/
-                    pwd
-                    docker build -t $IMAGE_FULL -f Project-3/text-analyzer-app/Dockerfile Project-3/text-analyzer-app
-                    '''
-                }
-            }
+        environment {
+            DOCKERHUB_USER = 'khannashiv'
+            IMAGE_NAME     = 'text-analyzer'
+            IMAGE_TAG      = "${BUILD_NUMBER}"
+            IMAGE_FULL     = "${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                script {
-                        echo "Testing SonarQube installation visibility..."
-                        def sonarEnv = withSonarQubeEnv('SonarQube') {
-                        echo "SonarQube environment configured properly."
-                }
-            }
-        }
+        stages {
 
-        stage('Docker login and Push the artifacts'){
-           steps{
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKER_PASS')]) {
-                script{
-                    sh '''
-                    echo 'Login to Docker Hub'
-                    echo "$DOCKER_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-
-                    echo 'Push to Repo'
-                    docker push $IMAGE_FULL
-                    '''
+                stage('Checkout') {
+                    steps {
+                        git credentialsId: 'GitHub-auth-creds',
+                        url: 'https://github.com/khannashiv/Jenkins-Practice.git',
+                        branch: 'main'
                     }
                 }
-            }
-        }
 
-        stage('Checkout K8S manifest SCM'){
-            steps {
-                git credentialsId: 'GitHub-auth-creds', 
-                url: 'https://github.com/khannashiv/CICD-manifests',
-                branch: 'main'
-            }
-        }
-
-        stage('Update K8S manifest & push to Repo'){
-            environment {
-                    GIT_REPO_NAME = "CICD-manifests"
-                    GIT_USER_NAME = "khannashiv"
+                stage('Build Docker Image') {
+                    steps {
+                        script {
+                            sh '''
+                            echo 'Buid Docker Image'
+                            ls -al /var/lib/jenkins/workspace/Test/Project-3/text-analyzer-app/
+                            pwd
+                            docker build -t $IMAGE_FULL -f Project-3/text-analyzer-app/Dockerfile Project-3/text-analyzer-app
+                            '''
+                        }
+                    }
                 }
-            steps {
-                script{
-                    withCredentials([string(credentialsId: 'GitHub-auth-creds', variable: 'GITHUB_TOKEN')]) {
-                        sh '''
-                            echo "Cloning target repo..."
-                            rm -rf target-repo
-                            git clone https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git target-repo
 
-                            echo "Cloning source repo (Jenkins-Practice)..."
-                            rm -rf src-repo
-                            git clone https://github.com/khannashiv/Jenkins-Practice.git src-repo
+                stage('SonarQube Analysis') {
+                    steps {
+                        script {
+                                echo "Testing SonarQube installation visibility..."
+                                def sonarEnv = withSonarQubeEnv('SonarQube') {
+                                echo "SonarQube environment configured properly."
+                            }
+                        }
+                    }
+                }
 
-                            echo "Modifying deploy.yaml in source repo"
-            
-                            SERVICE_YAML_PATH="src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/service.yml"
-                            DEPLOY_YAML_PATH="src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/deploy.yml"
+                stage('Docker login and Push the artifacts'){
+                    steps{
+                            withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKER_PASS')]) {
+                            script{
+                                sh '''
+                                echo 'Login to Docker Hub'
+                                echo "$DOCKER_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
 
-                            sed -i "s/ReplaceImageTag/${BUILD_NUMBER}/g" "$DEPLOY_YAML_PATH"
-                
-                            echo "Printing the udpated build number for manifest files."
-                            cat "$DEPLOY_YAML_PATH"
+                                echo 'Push to Repo'
+                                docker push $IMAGE_FULL
+                                '''
+                                }
+                            }
+                        }
+                    }
+
+                stage('Checkout K8S manifest SCM'){
+                    steps {
+                        git credentialsId: 'GitHub-auth-creds', 
+                        url: 'https://github.com/khannashiv/CICD-manifests',
+                        branch: 'main'
+                    }
+                }
+
+                stage('Update K8S manifest & push to Repo'){
+                    environment {
+                            GIT_REPO_NAME = "CICD-manifests"
+                            GIT_USER_NAME = "khannashiv"
+                        }
+                    steps {
+                        script{
+                            withCredentials([string(credentialsId: 'GitHub-auth-creds', variable: 'GITHUB_TOKEN')]) {
+                                sh '''
+                                    echo "Cloning target repo..."
+                                    rm -rf target-repo
+                                    git clone https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git target-repo
+
+                                    echo "Cloning source repo (Jenkins-Practice)..."
+                                    rm -rf src-repo
+                                    git clone https://github.com/khannashiv/Jenkins-Practice.git src-repo
+
+                                    echo "Modifying deploy.yaml in source repo"
                     
-                            echo "Copying updated deploy.yaml to target repo"
-                            mkdir -p target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests
-                            cp "$DEPLOY_YAML_PATH" target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/
-                            cp "$SERVICE_YAML_PATH" target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/
+                                    SERVICE_YAML_PATH="src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/service.yml"
+                                    DEPLOY_YAML_PATH="src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/deploy.yml"
 
-                            cd target-repo
-                            git config user.email "khannashiv94@gmail.com"
-                            git config user.name "Shiv"
+                                    sed -i "s/ReplaceImageTag/${BUILD_NUMBER}/g" "$DEPLOY_YAML_PATH"
+                        
+                                    echo "Printing the udpated build number for manifest files."
+                                    cat "$DEPLOY_YAML_PATH"
+                            
+                                    echo "Copying updated deploy.yaml to target repo"
+                                    mkdir -p target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests
+                                    cp "$DEPLOY_YAML_PATH" target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/
+                                    cp "$SERVICE_YAML_PATH" target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/
 
-                            git add Project-3/text-analyzer-app/text-analyzer-app-manifests/*
-                            git commit -m "Updated the deploy.yaml along with this copying service.yaml | Jenkins Pipeline" || echo "Nothing to commit"
-                            git push origin main || echo "Nothing to push"
-                        '''                        
+                                    cd target-repo
+                                    git config user.email "khannashiv94@gmail.com"
+                                    git config user.name "Shiv"
+
+                                    git add Project-3/text-analyzer-app/text-analyzer-app-manifests/*
+                                    git commit -m "Updated the deploy.yaml along with this copying service.yaml | Jenkins Pipeline" || echo "Nothing to commit"
+                                    git push origin main || echo "Nothing to push"
+                                '''                        
+                            }
+                        }
                     }
                 }
             }
-        }
-    }
 
-    post {
-        success {
-            echo "Build and push successful!"
-        }
-        failure {
-            echo "Build failed. Check logs."
+        post {
+            success {
+                echo "Build and push successful!"
+            }
+            failure {
+                echo "Build failed. Check logs."
+            }
         }
     }
-}
