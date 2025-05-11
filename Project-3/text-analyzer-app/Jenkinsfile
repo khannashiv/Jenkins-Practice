@@ -37,12 +37,15 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            // Replace tool name with the exact name defined in your Global Tool Configuration
-            def scannerHome = tool name: 'SonarQube Scanner 6.2.1.4610', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-
-            // Replace 'SonarQube' with the exact name defined in your SonarQube server configuration
-            withSonarQubeEnv('SonarQube') {
-                sh '${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=text-analyzer -Dsonar.sources=. -Dsonar.host.url=http://54.166.17.173:9000'
+            steps {
+                script {
+                        // Replace tool name with the exact name defined in your Global Tool Configuration
+                        def scannerHome = tool name: 'SonarQube Scanner 6.2.1.4610', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                        // Replace 'SonarQube' with the exact name defined in your SonarQube server configuration
+                        withSonarQubeEnv('SonarQube') {
+                            sh '${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=text-analyzer -Dsonar.sources=. -Dsonar.host.url=http://54.166.17.173:9000'
+                    }
+                }
             }
         }
 
