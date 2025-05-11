@@ -1,12 +1,7 @@
 pipeline {
 
         agent any
-
-        tools {
-                // Make sure this matches the tool name under Global Tool Configuration
-                sonarQube 'SonarQube Scanner'
-        }
-
+        
         options {
             buildDiscarder(logRotator(numToKeepStr: '2'))
         }
