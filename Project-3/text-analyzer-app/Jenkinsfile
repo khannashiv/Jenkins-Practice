@@ -4,7 +4,12 @@ pipeline {
 
     options {
         buildDiscarder(logRotator(numToKeepStr: '2'))
-        }
+    }
+
+    tools {
+        // Ensure this matches the name given in Global Tool Configuration
+        sonarQubeScanner 'SonarQube Scanner 6.2.1.4610'
+    }
 
     environment {
         DOCKERHUB_USER = 'khannashiv'
