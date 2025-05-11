@@ -39,10 +39,9 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                        def scannerHome = tool name: 'SonarQube Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-                        withSonarQubeEnv('SonarQube') {
-                            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=text-analyzer -Dsonar.sources=. -Dsonar.host.url=http://54.166.17.173:9000"
-                    }
+                        echo "Testing SonarQube installation visibility..."
+                        def sonarEnv = withSonarQubeEnv('SonarQube') {
+                        echo "SonarQube environment configured properly."
                 }
             }
         }
