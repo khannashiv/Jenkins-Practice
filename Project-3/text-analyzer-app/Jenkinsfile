@@ -44,13 +44,15 @@ pipeline {
                 stage('SonarQube Analysis') {
                     steps {
                         script {
-                                echo "Testing SonarQube installation visibility..."
+                                // Specify SonarQube Scanner installation
+                                def scannerHome = tool name: 'SonarQube Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                                // Run the SonarQube analysis with the correct environment
                                 withSonarQubeEnv('SonarQube') {
-                                sh 'sonar-scanner -Dsonar.projectKey=text-analyzer -Dsonar.sources=.'
+                                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=text-analyzer -Dsonar.sources=."
+                                }
                             }
                         }
-                    }
-                }
+                    }    
 
                 stage('Docker login and Push the artifacts'){
                     steps{
