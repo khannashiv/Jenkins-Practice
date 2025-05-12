@@ -86,7 +86,7 @@ text-analyzer-app/
 
 ---
 
-#### Method 2 🐳 Docker Setup : Here again we are trying to deploy same application using docker as a containerization paltform.
+#### Method 2 Docker Setup 🐳 : Here again we are trying to deploy same application using docker as a containerization paltform.
 
 1. **Build the Docker Image**
    ```bash
