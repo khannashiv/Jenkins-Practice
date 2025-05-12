@@ -59,7 +59,7 @@ text-analyzer-app/
 - sudo apt install python3-pip python3-venv git -y
 - sudo apt  install docker.io -y
 
-### Steps to run application locally onto your server in my case I'm using EC2 Server .
+#### Steps to run application locally onto your server in my case I'm using EC2 Server .
 
 1. **Clone the Repository**
    ```bash
