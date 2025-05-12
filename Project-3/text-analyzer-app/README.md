@@ -101,7 +101,7 @@ text-analyzer-app/
 
 ---
 
-## 📄 Documentation contains entire CICD deployment where application is deployed on top of Kubernetes cluster i.e. in the form of pod .
+## 📄 Documentation contains entire CICD deployment where target platform for deploying an applicaiton is Kubernetes.
 
 For detailed implementation information, refer to the [Implementation Guide](./implementation.md).
 
