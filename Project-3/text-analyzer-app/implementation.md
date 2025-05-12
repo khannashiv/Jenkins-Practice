@@ -127,8 +127,6 @@
         }
    }
    ```
-- ![](images/Pipeline-stage-2.PNG "Pipeline-stage-0")  
-- ![](images/Pipeline-stage-1.PNG "Pipeline-stage-1")
 
 <!-- Explanation of the 'Checkout and build docker image' stage:
 
@@ -143,6 +141,9 @@ Here we have two stages from a Jenkins declarative pipeline:
                 > Build context is: Project-3/text-analyzer-app .
                 > Tags the image using the environment variable $IMAGE_FULL .
 -->
+
+- ![](images/Pipeline-stage-2.PNG "Pipeline-stage-0")  
+- ![](images/Pipeline-stage-1.PNG "Pipeline-stage-1")
 
    ```groovy
    stages {
