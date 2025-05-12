@@ -59,7 +59,7 @@ text-analyzer-app/
 - sudo apt install python3-pip python3-venv git -y
 - sudo apt  install docker.io -y
 
-#### Method 1 : Steps to run application locally onto your server in my case I'm using EC2 Server .
+#### Method 1 Local setup : Steps to run application locally onto your server in my case I'm using EC2 Server .
 
 1. **Clone the Repository**
    ```bash
@@ -101,7 +101,7 @@ text-analyzer-app/
 
 ---
 
-## 📄 Documentation contains entire CICD deployment where target platform for deploying an applicaiton is Kubernetes.
+#### Method 3 CICD Setup : 📄 Documentation contains entire CICD deployment where target platform for deploying an applicaiton is Kubernetes.
 
 For detailed implementation information, refer to the [Implementation Guide](./implementation.md).
 
