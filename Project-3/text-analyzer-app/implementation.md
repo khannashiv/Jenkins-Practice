@@ -127,8 +127,8 @@
         }
    }
    ```
-![](images/Pipeline-stage-2.PNG "Pipeline-stage-0")  
-![](images/Pipeline-stage-1.PNG "Pipeline-stage-1")
+- ![](images/Pipeline-stage-2.PNG "Pipeline-stage-0")  
+- ![](images/Pipeline-stage-1.PNG "Pipeline-stage-1")
 
 <!-- Explanation of the 'Checkout and build docker image' stage:
 
@@ -164,9 +164,9 @@ Here we have two stages from a Jenkins declarative pipeline:
         }
    ```
 
-   ![](images/Pipeline-stage-2.PNG "Pipeline-stage-2")  
-   ![](images/Pipeline-stage-3.PNG "Pipeline-stage-3")
-   ![](images/Pipeline-stage-4.PNG "Pipeline-stage-4")
+   - ![](images/Pipeline-stage-2.PNG "Pipeline-stage-2")  
+   - ![](images/Pipeline-stage-3.PNG "Pipeline-stage-3")
+   - ![](images/Pipeline-stage-4.PNG "Pipeline-stage-4")
 
 <!-- Explanation of 'Docker login and Push the artifacts' stage .
 
@@ -188,11 +188,11 @@ Here we have two stages from a Jenkins declarative pipeline:
      }
 ```
 
-   ![](images/Pipeline-stage-5.PNG "Pipeline-stage-5")
-   ![](images/Pipeline-stage-6.PNG "Pipeline-stage-6")
+   - ![](images/Pipeline-stage-5.PNG "Pipeline-stage-5")
+   - ![](images/Pipeline-stage-6.PNG "Pipeline-stage-6")
 
-   ![](images/Docker-hub-1.PNG "Docker-hub-1")
-   ![](images/Docker-hub-2.PNG "Docker-hub-2")
+   - ![](images/Docker-hub-1.PNG "Docker-hub-1")
+   - ![](images/Docker-hub-2.PNG "Docker-hub-2")
 
 <!-- Explanation of 'Checkout K8S manifest SCM' stage .
 
@@ -256,17 +256,17 @@ Here we have two stages from a Jenkins declarative pipeline:
    }
    ```
 
-  ![](images/Pipeline-stage-7.PNG "Pipeline-stage-7")
-  ![](images/Pipeline-stage-8.PNG "Pipeline-stage-8")
-  ![](images/Pipeline-stage-9.PNG "Pipeline-stage-9")
+  - ![](images/Pipeline-stage-7.PNG "Pipeline-stage-7")
+  - ![](images/Pipeline-stage-8.PNG "Pipeline-stage-8")
+  - ![](images/Pipeline-stage-9.PNG "Pipeline-stage-9")
  
-  ![](images/Node-agent-1.PNG "Node-agent-1")
-  ![](images/Node-agent-2.PNG "Node-agent-2")
-  ![](images/Node-agent-3.PNG "Node-agent-3")
+  - ![](images/Node-agent-1.PNG "Node-agent-1")
+  - ![](images/Node-agent-2.PNG "Node-agent-2")
+  - ![](images/Node-agent-3.PNG "Node-agent-3")
 
  
-  ![](images/Git-manifest-repo-1.PNG "Git-manifest-repo-1")
-  ![](images/Git-manifest-repo-2.PNG "Git-manifest-repo-2")
+  - ![](images/Git-manifest-repo-1.PNG "Git-manifest-repo-1")
+  - ![](images/Git-manifest-repo-2.PNG "Git-manifest-repo-2")
 
   <!-- Explaination of Update K8S manifest & push to Repo
         
