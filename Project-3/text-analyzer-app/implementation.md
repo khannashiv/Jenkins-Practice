@@ -1,7 +1,7 @@
 ## Setting Up Jenkins
 
 1. **Install Jenkins**:
-   - Set up a Jenkins server on an EC2 instance (e.g., t2.large if one is installaing sonarqube as well else if you are skipping sonarqube t2.micro is suffice).
+   - Set up a Jenkins server on an EC2 instance (e.g., t2.large if one is installaing sonarqube as well else if you are skipping sonarqube stage in that case t2.micro is suffice).
    - Use the following command to retrieve the initial admin password:
      ```bash
      cat /var/lib/jenkins/secrets/initialAdminPassword
@@ -31,373 +31,285 @@
     - ![](images/Jenkins-config-3.PNG "Jenkins-config-3")
     - ![](images/Jenkins-config-4.PNG "Jenkins-config-4")
     - ![](images/Jenkins-config-5.PNG "Jenkins-config-5")
+    - ![](images/Jenkins-config-6.PNG "Jenkins-config-6")
+    - ![](images/Jenkins-config-7.PNG "Jenkins-config-7")
 
 ## Configuring the Pipeline
 
-- **Jenkinsfile**: Add the pipeline script in a file named `JenkinsFile` at the git repository whose absolute path is Jenkins-Practice/Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app/JenkinsFile. Below we are explaining each code block which is part of Jenkins pipeine.
+- **Jenkinsfile**: Add the pipeline script in a file named `Jenkinsfile` at the git repository whose absolute path is Jenkins-Practice/Project-3/text-analyzer-app/Jenkinsfile. Below we are explaining each code block which is part of Jenkins pipeine.
 
    ```groovy
-   pipeline {
-
-       agent {
-           docker {
-               image 'khannashiv/maven-shiv-docker-agent:v1'
-               args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
-           }
-       }
-   }
+        agent any
    ```
 
 <!-- Explanation of the agent block above:
-    - pipeline { ... }
-        This declares a Declarative Pipeline, the modern and more structured way to define Jenkins pipelines.
-        - `agent`: Specifies where and how Jenkins should run the pipeline or specific stages.
-            - `docker`: Indicates the pipeline will run inside a Docker container.
-                - `image`: Specifies the Docker image (`khannashiv/maven-shiv-docker-agent:v1`) to use.
-                    - Jenkins will:
-                        - Pull this image from Docker Hub (or another registry) if it's not already on the system (i.e. if not present on Jenkins Node.)
-                        - Start a container using this image to run the pipeline steps.
-                        - This image probably includes Maven, Java, and other tools needed for building Java projects.
-                - `args`: Provides additional arguments to the Docker container:
-                - `--user root`: Runs the container as the root user.
-                - `-v /var/run/docker.sock:/var/run/docker.sock`: Mounts the host's Docker socket into the container, allowing Docker commands inside the container to interact with the host's Docker daemon.
+    
+ -- agent specifies where the pipeline or a stage runs (which machine or environment).
+ -- any tells Jenkins:
+        ➤ "Use any available executor on any available agent (including the master, if allowed).”
+ -- You can also be more specific:
+        > agent none                 – Use this if you'll specify agents per stage.
+        > agent { label 'linux' }    – Run only on agents labeled linux.
+        > agent { docker 'node:14' } – Run in a Docker container using node:14. In other words it says i.e. Run the pipeline (or stage) inside a Docker container that uses the node:14 image.
+        > for example i.e.
 
-- Summary of this code block
-    - This pipeline block configures Jenkins to run all build steps inside a custom Docker container with root access and Docker control, which is useful for Maven-based projects that also need to build or run Docker images.
+        pipeline {
+                agent {
+                    docker 'node:14'
+                }
+                stages {
+                    stage('Build') {
+                        steps {
+                            sh 'node -v'
+                            sh 'npm install'
+                        }
+                    }
+                }
+            }
 
-Q: How Jenkins Gets the Docker Image ?
-
-Sol :
-1. Jenkins uses the local Docker engine on the agent node (where the pipeline runs).The Docker agent is required on that node for this to work.
-
-2.Image Lookup and Pulling.
-    -- Jenkins instructs Docker to run the image khannashiv/maven-shiv-docker-agent:v1.
-    -- Docker checks if that image is already present locally.
-    -- If the image is not found locally, Docker will:
-        . Attempt to pull it from Docker Hub (since no private registry or credentials were specified).
-        . This assumes khannashiv/maven-shiv-docker-agent:v1 is publicly available on Docker Hub.
-3. Execution
-    -- Once the image is pulled (or found locally), Docker spins up a container using that image.
-    -- Jenkins executes all pipeline steps inside that container, with root access and the host’s Docker socket mounted.
-
-Prerequisites for this to Work .
-    The Jenkins agent must:
-        . Have Docker installed and running.
-        . Be able to pull images from Docker Hub.
-        . Have permissions to run Docker containers (Jenkins user is often part of the docker group).
 -->
 
    ```groovy
    options {
-       skipDefaultCheckout(true)
-       buildDiscarder(logRotator(numToKeepStr: '10'))
+       buildDiscarder(logRotator(numToKeepStr: '2'))
    }
    ```
 
 <!-- Explanation of the options block mentioned above .
 
-- `skipDefaultCheckout(true)`: Prevents Jenkins from automatically checking out the repository source code at the start of the pipeline. This is useful for custom checkouts and avoiding permission issues.
-- `buildDiscarder(logRotator(numToKeepStr: '10'))`: Configures Jenkins to retain only the last 10 builds, automatically discarding older build logs to save disk space.
-- skipDefaultCheckout(true) and buildDiscarder(logRotator(...)) are built-in features provided by Jenkins for use in Declarative Pipelines.
+- `buildDiscarder(logRotator(numToKeepStr: '2'))`: Configures Jenkins to retain only the last 2 builds, automatically discarding older build logs to save disk space.
+- buildDiscarder(logRotator(...)) is built-in features provided by Jenkins for use in Declarative Pipelines.
+
+-->
+
+``` groovy
+
+   environment {
+        DOCKERHUB_USER = 'khannashiv'
+        IMAGE_NAME     = 'text-analyzer'
+        IMAGE_TAG      = "${BUILD_NUMBER}"
+        IMAGE_FULL     = "${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
+    }
+
+```
+
+<!-- Explanation of environment block mentioned above .
+  
+  -- The environment block provided is defining environment variables for my Jenkins pipeline, which can be used throughout my build steps .
+        - DOCKERHUB_USER: My Docker Hub username (khannashiv).
+        - IMAGE_NAME: The name that we want for our Docker image (text-analyzer).
+    - IMAGE_TAG: The tag/version of the image. we're using ${BUILD_NUMBER}, which Jenkins automatically provides (e.g., #1,     #2, etc.).
+        - IMAGE_FULL: Combines all of the above into a full Docker image reference, like: khannashiv/text-analyzer:5
 
 -->
 
    ```groovy
    stages {
+        stage('Checkout') {
+            steps {
+                git credentialsId: 'GitHub-auth-creds',
+                url: 'https://github.com/khannashiv/Jenkins-Practice.git',
+                branch: 'main'
+            }
+        }
 
-       stage('Clean Workspace & Fix Permissions') {
-           steps {
-               sh '''
-               echo "Cleaning workspace and fixing permissions..."
-               rm -rf ${WORKSPACE}/*
-               mkdir -p ${WORKSPACE}
-               chown -R 111:113 ${WORKSPACE}
-               '''
-           }
-       }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh '''
+                    echo 'Buid Docker Image'
+                    ls -al /var/lib/jenkins/workspace/Test/Project-3/text-analyzer-app/
+                    pwd
+                    docker build -t $IMAGE_FULL -f Project-3/text-analyzer-app/Dockerfile Project-3/text-analyzer-app
+                    '''
+                }
+            }
+        }
    }
    ```
+![](images/Pipeline-stage-2.PNG "Pipeline-stage-0")  
 ![](images/Pipeline-stage-1.PNG "Pipeline-stage-1")
 
-<!-- Explanation of the 'Clean Workspace & Fix Permissions' stage:
+<!-- Explanation of the 'Checkout and build docker image' stage:
 
-This stage ensures a clean workspace by removing old files and resetting permissions to avoid conflicts in subsequent stages.
-- echo "Cleaning workspace and fixing permissions..."
-    . Prints a message to the Jenkins console log for visibility.
-- rm -rf ${WORKSPACE}/*
-    . Deletes everything inside the Jenkins workspace directory.
-- ${WORKSPACE} is a built-in Jenkins environment variable pointing to the job’s working directory. In this case path of this env variable is : /var/lib/jenkins/workspace/Project-1 ( Refer snap for this stage .)
-- rf means:
-    r: recursive (delete directories and contents)
-    f: force (ignore non-existent files, don’t prompt)
-- mkdir -p ${WORKSPACE}
-    . Recreates the workspace directory if needed.
-    . -p ensures no error is thrown if it already exists.
-- chown -R 111:113 ${WORKSPACE}
-    . Changes the ownership of the workspace directory to user ID 111 (Jenkins) and group ID 113 (Jenkins).
-    . -R: recursive, applies to all files and subdirectories.
-- Purpose of this Stage:
-        -- Ensures a clean build environment.
-        -- Resolves file permission issues, especially in Docker-based builds where user IDs in the container and host differ.
-        -- Prevents problems from leftover files of previous builds.
+Here we have two stages from a Jenkins declarative pipeline:
+
+        -- Checkout Stage: Checks out code from GitHub.
+            What it does:
+                > Clones the main branch of the given GitHub repo.
+                > Uses stored Jenkins credentials (GitHub-auth-creds) for authentication.
+        -- Build Docker Image Stage: Builds a Docker image using a Dockerfile from your project.
+                > Uses Dockerfile located at: Project-3/text-analyzer-app/Dockerfile .
+                > Build context is: Project-3/text-analyzer-app .
+                > Tags the image using the environment variable $IMAGE_FULL .
 -->
 
    ```groovy
    stages {
+           stage('Docker login and Push the artifacts'){
+                steps{
+                        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        script{
+                            sh '''
+                            echo 'Login to Docker Hub'
+                            echo "$DOCKER_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
 
-    stage('Checkout') {
-        steps {
-            checkout([
-            $class: 'GitSCM',
-            branches: [[name: '*/main']],
-            userRemoteConfigs: [[
-                url: 'https://github.com/khannashiv/Jenkins-Practice.git',
-                credentialsId: 'github'
-            ]]
-            ])
+                            echo 'Push to Repo'
+                            docker push $IMAGE_FULL
+                            '''
+                        }
+                    }
+                }
+            }
         }
-        }
-   }
    ```
-![](images/Pipeline-stage-2.PNG "Pipeline-stage-2")
 
-<!-- Explanation of the 'Checkout' stage .
-
--- stage('Checkout') : Defines a stage in the pipeline called "Checkout", where source code retrieval occurs.
-    -- steps { ... } : Contains the commands to be executed during this stage.
-        -- checkout([ ... ]) : Invokes a manual Git checkout using Jenkins' internal Git plugin (GitSCM class).
-            . $class: 'GitSCM' : Tells Jenkins to use the GitSCM (Source Control Manager) plugin for this checkout.
-            . branches: [[name: '*/main']] : Specifies the branch to check out.
-                */main matches the main branch regardless of the remote name (origin/main, etc.).
-            . userRemoteConfigs: [[ ... ]] : Defines where to pull the source code from and what credentials to use: url: 'https://github.com/khannashiv/Jenkins-Practice.git' -- > The GitHub repository URL.
-            . credentialsId: 'github' : The ID of credentials stored in Jenkins (in Manage Jenkins > Credentials).
-                - This is mainly used for authenticated access to private repositories.
-                - This ID must match the one we've configured in Jenkins (e.g., personal access token or classic token).
--->
-
-   ```groovy
-   stages {
-        stage('Build and Test') {
-            steps {
-        sh 'ls -ltr'
-        sh 'cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
-      }
-    }
-   }
-   ```
+   ![](images/Pipeline-stage-2.PNG "Pipeline-stage-2")  
    ![](images/Pipeline-stage-3.PNG "Pipeline-stage-3")
    ![](images/Pipeline-stage-4.PNG "Pipeline-stage-4")
 
-   <!-- Explanation of the 'Explanation of the 'Build & Test' stage .
+<!-- Explanation of 'Docker login and Push the artifacts' stage .
 
-    -- sh 'ls -ltr' : Lists all files and directories in the current Jenkins workspace directory .
-    -- sh 'cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
-        -- Changes into the following nested directory i.e. Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app
-        -- Then runs:
-                -- mvn clean: Deletes previously compiled files and the target directory (ensures a clean build).
-                -- mvn package: Compiles the code, runs unit tests, and packages the application into a .jar or .war, based on your pom.xml
+    -- withCredentials(...) : Securely injects Docker Hub username and password from Jenkins credentials (ID: dockerhub-creds).Makes them available in shell as DOCKERHUB_USER and DOCKER_PASS.
+    -- docker login : Logs into Docker Hub securely using the password from the Jenkins credential (via --password-stdin).
+    -- docker push $IMAGE_FULL : Pushes the previously built image (ex : khannashiv/text-analyzer:5) to Docker Hub.
 
-    Q :What Must Be true for this stage to Work ?
-    Sol : 
-        . The path Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app must exist in the Jenkins workspace (i.e., it was checked out correctly).
-        . Maven (mvn) must be installed and available in the environment or Docker container.
-        . The directory must contain a valid pom.xml.
 -->
 
-  ```groovy
-   stages {
-
-        stage('Static Code Analysis') {
-            environment {
-            SONAR_URL = "http://3.87.39.73:9000"
-        }
+ ```groovy
+     stages {
+        stage('Checkout K8S manifest SCM'){
             steps {
-                withCredentials([string(credentialsId: 'sonarqube_token', variable: 'SONAR_AUTH_TOKEN')]) {
-                sh 'cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
-                }
+                git credentialsId: 'GitHub-auth-creds', 
+                url: 'https://github.com/khannashiv/CICD-manifests',
+                branch: 'main'
             }
-    }
-   }
-   ```
+        }
+     }
+```
 
    ![](images/Pipeline-stage-5.PNG "Pipeline-stage-5")
    ![](images/Pipeline-stage-6.PNG "Pipeline-stage-6")
-   ![](images/Pipeline-stage-7.PNG "Pipeline-stage-7")
-   ![](images/Pipeline-stage-8.PNG "Pipeline-stage-8")
 
-<!-- Explanation of the 'Static Code Analysis' stage .
+   ![](images/Docker-hub-1.PNG "Docker-hub-1")
+   ![](images/Docker-hub-2.PNG "Docker-hub-2")
 
- -- stage('Static Code Analysis') : Defines a pipeline stage named "Static Code Analysis".
- -- environment { SONAR_URL = "http://3.87.39.73:9000" }
-    -- Sets a stage-level environment variable named SONAR_URL.
-    -- This is the URL where your SonarQube server is running.
-    -- In this case: http://3.87.39.73:9000 (likely an EC2 instance or similar).
--- withCredentials([string(...)])
-    -- Securely injects a SonarQube authentication token into the environment.
-    -- credentialsId: 'sonarqube_token': Refers to a secret string stored in Jenkins Credentials.
-    -- variable: 'SONAR_AUTH_TOKEN': The environment variable Jenkins will use inside the block.
--- Shell Commands :
-    -- cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && \
-    -- mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}
-         # Changes into the Spring Boot app directory.
-         # Runs a Maven command to trigger SonarQube analysis with:
-            -Dsonar.login=$SONAR_AUTH_TOKEN: uses the secure token for authentication.
-            -Dsonar.host.url=${SONAR_URL}: tells Maven where to send analysis results.
+<!-- Explanation of 'Checkout K8S manifest SCM' stage .
 
-Assumptions for this stage to Work.
-    .. The project has a valid pom.xml with SonarQube plugin configured.
-    .. Jenkins has the SonarQube token stored under the ID sonarqube_token.
-    .. Maven and the sonar:sonar goal are available.
-    .. The SonarQube server (http://3.87.39.73:9000) is reachable from Jenkins.
+    -- git: Jenkins built-in step to check out code from Git.
+    -- credentialsId: Uses stored credentials for authenticated access to a private repo (or personal access token if needed).
+    -- url: Your GitHub repo where the Kubernetes YAMLs or Helm charts are stored.
+    -- branch: Checks out the main branch.
+    This is useful when : 
+       -- We're maintaining Kubernetes manifests separately from your application code / repository.
+       -- We want to deploy the latest manifests as part of the pipeline (e.g., with kubectl apply or Helm).
 -->
 
-  ```groovy
+
+ ```groovy
    stages {
 
-        stage('Build and Push Docker Image') {
-            environment {
-                DOCKER_IMAGE = "khannashiv/ultimate-cicd:${BUILD_NUMBER}"
-                REGISTRY_CREDENTIALS = credentials('docker-cred')
+      stage('Update K8S manifest & push to Repo'){
+        environment {
+                GIT_REPO_NAME = "CICD-manifests"
+                GIT_USER_NAME = "khannashiv"
             }
             steps {
-                script {
-                sh 'cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
-                def dockerImage = docker.image("${DOCKER_IMAGE}")
-                docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
-                    dockerImage.push()
-                }
+                script{
+                    withCredentials([string(credentialsId: 'GitHub-auth-creds', variable: 'GITHUB_TOKEN')]) {
+                        sh '''
+                            echo "Cloning target repo..."
+                            rm -rf target-repo
+                            git clone https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git target-repo
+
+                            echo "Cloning source repo (Jenkins-Practice)..."
+                            rm -rf src-repo
+                            git clone https://github.com/khannashiv/Jenkins-Practice.git src-repo
+
+                            echo "Modifying deploy.yaml in source repo"
+
+                            SERVICE_YAML_PATH="src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/service.yml"
+                            DEPLOY_YAML_PATH="src-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/deploy.yml"
+
+                            sed -i "s/ReplaceImageTag/${BUILD_NUMBER}/g" "$DEPLOY_YAML_PATH"
+
+                            echo "Printing the udpated build number for manifest files."
+                            cat "$DEPLOY_YAML_PATH"
+
+                            echo "Copying updated deploy.yaml to target repo"
+                            mkdir -p target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests
+                            cp "$DEPLOY_YAML_PATH" target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/
+                            cp "$SERVICE_YAML_PATH" target-repo/Project-3/text-analyzer-app/text-analyzer-app-manifests/
+
+                            cd target-repo
+                            git config user.email "khannashiv94@gmail.com"
+                            git config user.name "Shiv"
+
+                            git add Project-3/text-analyzer-app/text-analyzer-app-manifests/*
+                            git commit -m "Updated the deploy.yaml along with this copying pod.yaml as well as service.yaml | Jenkins Pipeline" || echo "Nothing to commit"
+                            git push origin main || echo "Nothing to push"
+                        '''                        
+                    }
                 }
             }
         }
    }
    ```
 
- ![](images/Pipeline-stage-9.PNG "Pipeline-stage-9")
- ![](images/Pipeline-stage-10.PNG "Pipeline-stage-10")
- ![](images/Pipeline-stage-11.PNG "Pipeline-stage-11")
- ![](images/Pipeline-stage-12.PNG "Pipeline-stage-12")
- ![](images/Pipeline-stage-13.PNG "Pipeline-stage-13")
- ![](images/Pipeline-stage-14.PNG "Pipeline-stage-14")
-
-   <!-- Explanation of the 'Build and Push Docker Image' stage .
-
-    -- This stage builds a Docker image from your Java app and pushes it to Docker Hub using credentials stored in Jenkins.
-    -- environment { ... }
-        Defines environment variables for this stage .
-            -- DOCKER_IMAGE = "khannashiv/ultimate-cicd:${BUILD_NUMBER}"
-            -- The Docker image name and tag.
-            -- Uses the current Jenkins build number as the tag (e.g., khannashiv/ultimate-cicd:44).
-            -- REGISTRY_CREDENTIALS = credentials('docker-cred')
-            -- Injects Docker Hub credentials stored in Jenkins under the ID docker-cred.
-    -- script { ... }
-        --  Build Docker image: sh 'cd Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app && docker build -t ${DOCKER_IMAGE} .'
-            .. Changes into the app directory.
-            .. Runs Docker build using the Dockerfile there.
-            .. Tags the image as khannashiv/ultimate-cicd:<build_number>.
-        --  Prepare Docker image for push: def dockerImage = docker.image("${DOCKER_IMAGE}")
-            .. Creates a reference to the built Docker image in Jenkins Docker pipeline DSL.
-                .. Meaning of : def dockerImage = docker.image("${DOCKER_IMAGE}")
-                    This line tells Jenkins:
-                        -- “Hey, I have a Docker image called khannashiv/ultimate-cicd:<build number> (from the DOCKER_IMAGE variable).”
-                        -- “Save a reference to that image so I can do things with it later.This menas dockerImage will act as a”
-                        -- Think of it like saying: “This is the image I just built — remember it as dockerImage.”
-
-        -- Authenticate and push:
-            docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
-                                                    dockerImage.push()
-                                                }
-                .. Logs into Docker Hub using credentials ID docker-cred.
-                .. Pushes the image to the registry.
-                .. docker.withRegistry('https://index.docker.io/v1/', "docker-cred") { ... }
-                    .. This tells Jenkins : “Log in to Docker Hub using my saved credentials (docker-cred).”
-                .. dockerImage.push() : This tells Jenkins : “Take the image I just referenced (dockerImage) and push it to Docker Hub.”
-
-The login is temporary — it’s only used inside the { ... } block.
-
-What must be true for this stage to Work ?
-
-    .. Docker must be installed and running on the Jenkins agent.
-    .. Jenkins must have Docker credentials stored as ID docker-cred.
-    .. The Dockerfile must exist in the specified app directory.
-    .. Jenkins must be running as a user with permission to run Docker (docker.sock access, often via --user root in Docker agents).
--->
-
-
-  ```groovy
-   stages {
-
-        stage('Update Deployment File') {
-            environment {
-            GIT_REPO_NAME = "Jenkins-Practice"
-            GIT_USER_NAME = "khannashiv"
-            }
-        steps {
-            withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-            sh '''
-                echo "Updating deployment.yml with image tag ${BUILD_NUMBER}"
-                export GIT_DIR=$WORKSPACE/.git
-                export GIT_WORK_TREE=$WORKSPACE
-                git config user.email "khannashiv94@gmail.com"
-                git config user.name "Shiv"
-
-                sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-                git add Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-
-                git commit -m "Update deployment image to version ${BUILD_NUMBER}" || echo "Nothing to commit"
-                git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main || echo "Nothing to push"
-            '''
-            }
-        }
-    }
-   }
-   ```
-
- ![](images/Pipeline-stage-15.PNG "Pipeline-stage-15")
- ![](images/Pipeline-stage-16.PNG "Pipeline-stage-16")
- ![](images/Pipeline-stage-17.PNG "Pipeline-stage-17")
- ![](images/Jenkins-server-docker-images.PNG "Jenkins-server-docker-images")
-
-<!-- Explanation of the 'Update Deployment File' stage .
+  ![](images/Pipeline-stage-7.PNG "Pipeline-stage-7")
+  ![](images/Pipeline-stage-8.PNG "Pipeline-stage-8")
+  ![](images/Pipeline-stage-9.PNG "Pipeline-stage-9")
  
- -- Environment Variables: These are used to build the GitHub push URL later.
-    GIT_REPO_NAME = "Jenkins-Practice"
-    GIT_USER_NAME = "khannashiv"
+  ![](images/Node-agent-1.PNG "Node-agent-1")
+  ![](images/Node-agent-2.PNG "Node-agent-2")
+  ![](images/Node-agent-3.PNG "Node-agent-3")
 
--- withCredentials([string(...)]) : credentialsId: 'github', variable: 'GITHUB_TOKEN'
-    .. Securely loads your GitHub access token (stored in Jenkins under ID 'github').
-    .. It's assigned to the variable GITHUB_TOKEN for use in Git operations.
+ 
+  ![](images/Git-manifest-repo-1.PNG "Git-manifest-repo-1")
+  ![](images/Git-manifest-repo-2.PNG "Git-manifest-repo-2")
 
+  <!-- Explaination of Update K8S manifest & push to Repo
+        
+        NOTE : This git repository i.e. https://github.com/khannashiv/CICD-manifests initially is empty i.e. it is not holding any manifest files. Also src repo as well as target repo these are directories will get created on Jenkins node /agent on the host VM. These are kind of temporary directory or we can call it placeholder directory which will holds respective data which falls under it after cloning the repository .These are only seen on the VM which is my Jenkins worker node in this case .These ( src-repo and target-repo folders ) will not be visible inside git.
+         
+        -- This Jenkins pipeline stage automates the process of updating Kubernetes manifest files with the current build number, then pushing those updated files to a GitHub repo used for Kubernetes deployments.
 
--- echo "Updating deployment.yml with image tag ${BUILD_NUMBER}" : Logs the current action for visibility.
+        -- Stage: Update K8S manifest & push to Repo .
+            -- Goal : Update image tags in YAML files (used for Kubernetes deployment) with the latest build number, and push those changes to the CICD-manifests GitHub repository.
 
---  export GIT_DIR=$WORKSPACE/.git
-    export GIT_WORK_TREE=$WORKSPACE
-     .. Meaning of export : Tells Git where your project is located — this setup is needed if Jenkins doesn’t automatically set it up as a standard Git working tree.
+        -- environment { ... } : Sets two environment variables:
+            -- GIT_REPO_NAME: Name of the target GitHub repo (where updated files will be pushed) .
+            -- GIT_USER_NAME: GitHub username used in the Git clone URL .
 
---  git config user.email "khannashiv94@gmail.com"
-    git config user.name "Shiv"
-    .. Configures Git identity (needed for commits).
+        -- withCredentials(...) : Uses a GitHub token (from Jenkins credentials) to authenticate private repo access securely.
 
--- sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/deployment.yml
-    .. Replaces the placeholder text replaceImageTag in your deployment file with the actual Jenkins build number (e.g., 15).
-    .. This essentially updates the image tag to point to the new Docker image you just built.
+        -- sh ''' ... '''  :  Shell script block
 
--- git add Project-1/.../deployment.yml
-    .. Stages the modified deployment file for commit.
+        -- Clone Target Repo (Where changes will be pushed):
+            - git clone https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git target-repo : Downloads the CICD-manifests repo into a folder named target-repo.
 
--- git commit -m "Update deployment image to version ${BUILD_NUMBER}" || echo "Nothing to commit"
-    .. Commits the change, or prints a message if nothing was actually changed.
+        -- Clone Source Repo (Where the original YAML files are): 
+            - git clone https://github.com/khannashiv/Jenkins-Practice.git src-repo : Clones your Jenkins-Practice repo into src-repo — this repo contains the original deploy.yaml, pod.yaml, and service.yaml files.
 
--- git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main || echo "Nothing to push"
-    .. Pushes the commit to the main branch on GitHub using your token for authentication.
-    .. Falls back to a message if there's nothing to push.
+        -- Modify the YAML files: sed -i "s/ReplaceImageTag/${BUILD_NUMBER}/g" "$DEPLOY_YAML_PATH"
+            - Replaces the placeholder ReplaceImageTag in your YAML files with the actual Jenkins build number — this ensures the new Docker image version is used in the Kubernetes deployment.
 
+        -- Print updated YAML files: Useful for debugging; prints the new content to the Jenkins log.
 
-Summary for this stage .
-        -- Edits your Kubernetes deployment file to use the latest image.
-        -- Commits and pushes that change to GitHub automatically.
-        -- This is essential for GitOps workflows, where you want your Git repo to be the single source of truth for deployments.
--->
+        -- Copy updated YAML files into the target repo: These updated files are copied to the correct location inside the target-repo directory, preparing them for commit.
+
+        -- Commit and push the changes:
+            -- git add ...
+            -- git commit ...
+            -- git push origin main
+                - Pushes the updated Kubernetes manifests back to the GitHub repo (CICD-manifests), so that: They reflect the new Docker image version .
+
+        Summary
+                -- This stage automates versioning of your Kubernetes deployment files by doing following steps .
+                        - Inserting the current build number
+                        - Committing those updates
+                        - Pushing them to a GitHub repo used for Kubernetes deployment
+    -->
 
 ## Here we have completed CI part from implementation prospective & we are going to implement CD part .
 
@@ -511,12 +423,6 @@ Summary for this stage .
                 | `kubectl exec -it <pod-name> -- bash`         | Executes an interactive shell in the pod (if bash is available).  |
                 | `kubectl get events`                          | Shows recent events (warnings, info).                             |
 
- - ![](images/minikube-1.PNG "minikube-1")
- - ![](images/minikube-2.PNG "minikube-2")
- - ![](images/ArgoCD-1.PNG "ArgoCD-1")
- - ![](images/ArgoCD-2.PNG "ArgoCD-2")
-
-
 3. **Creating ArgoCD controller** :
 
     - Create a new yml file say by the name of : vim argocd-basic.yml
@@ -524,7 +430,7 @@ Summary for this stage .
     - Refrence docs : https://argocd-operator.readthedocs.io/en/latest/usage/basics/ 
     - After this run command i.e.  kubectl apply -f argocd-basic.yml and wait for argocd pods to get deployed under default namespace.
     - Once pods are ready go to the services such that : kubectl get svc & look for example-argocd-server and by default the type of service will be ClusterIP.
-    - We will go ahead & convert this to NodePort so that we can login to ArgoCD via browser since this service is responsible for ArgoCD UI . So we will run command i.e. kubectl edit svc example-argocd-server ( This may not work due to ownerReferences section hence follow below stepsto change service type.)
+    - We will go ahead & convert this to NodePort so that we can login to ArgoCD via browser since this service is responsible for ArgoCD UI . So we will run command i.e. kubectl edit svc example-argocd-server ( This may not work due to ownerReferences section hence follow below steps to change service type.)
 
         - kubectl get argocd -A
         - kubectl edit argocd example-argocd -n default
@@ -551,7 +457,7 @@ Summary for this stage .
     - CLUSTER   : https://kubernetes.default.svc
     - NAMESPACE : default
     - REPO URL  : https://github.com/khannashiv/Jenkins-Practice 
-    - PATH      : To manifest files i.e. Project-1/java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests/ 
+    - PATH      : To manifest files i.e. Project-1/text-analyzer-app/text-analyzer-app-manifests 
     - Finally we can see our application running on top of pods got deployed sucessfully after configuring ArgoCD.
         - kubectl get pods
         - kubectl get deploy
@@ -559,9 +465,11 @@ Summary for this stage .
         - minikube service list
         - We can see minikube has alloted 1 more URL to application i.e. using which we can load app on top of browser .
 
-            default     | spring-boot-app-service                            | http/80      | http://192.168.49.2:31123
+            default     | text-analyzer-app-service         | http/80      | http://192.168.49.2:31001
 
 
+ - ![](images/ArgoCD-1.PNG "ArgoCD-1")
+ - ![](images/ArgoCD-2.PNG "ArgoCD-2")
  - ![](images/ArgoCD-3.PNG "ArgoCD-3")
  - ![](images/ArgoCD-4.PNG "ArgoCD-4")
  - ![](images/ArgoCD-5.PNG "ArgoCD-5")
@@ -571,5 +479,4 @@ Summary for this stage .
  - ![](images/ArgoCD-9.PNG "ArgoCD-9")
  - ![](images/ArgoCD-10.PNG "ArgoCD-10")
  - ![](images/ArgoCD-11.PNG "ArgoCD-11")
- - ![](images/ArgoCD-13.PNG "ArgoCD-13")
- - ![](images/ArgoCD-12.PNG "ArgoCD-12")
+ - ![](images/App-outcome-1.PNG "App-outcome-1")
