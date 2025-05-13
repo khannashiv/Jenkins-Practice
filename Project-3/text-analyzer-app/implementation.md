@@ -312,6 +312,8 @@ Here we have two stages from a Jenkins declarative pipeline:
     -->
 **Point to NOTE**
 
+-   Below next 3 snaps shows webhook configuration on git side and corresponding hook trigger configuration on jenkins side, enables automatic builds ( jenkins build ) whenever a developer commits to the version control system (VCS) or source code management (SCM) — Git in this case.
+
 #### Jenkins-job-name
 - ![](images/Job-name-1.PNG "Job-name-1")
 #### Jenkins-trigger-github-hook
