@@ -312,9 +312,13 @@ Here we have two stages from a Jenkins declarative pipeline:
     -->
 **Point to NOTE**
 
+#### Jenkins-job-name
 - ![](images/Job-name-1.PNG "Job-name-1")
+#### Jenkins-trigger-github-hook
 - ![](images/Jenkins-trigger-github-hook-1.PNG "Jenkins-trigger-github-hook-1")
+#### Git-webhook-1
 - ![](images/Git-webhook-1.PNG "Git-webhook-1")
+
  <!--
     -- > There are couple of ways to trigger a jenkins build.
     M1. (Manually triggering a pipeline.)
