@@ -310,7 +310,27 @@ Here we have two stages from a Jenkins declarative pipeline:
                         - Committing those updates
                         - Pushing them to a GitHub repo used for Kubernetes deployment
     -->
+**Point to NOTE**
 
+- ![](images/Job-name-1.PNG "Job-name-1")
+- ![](images/Jenkins-trigger-github-hook-1.PNG "Jenkins-trigger-github-hook-1")
+- ![](images/Git-webhook-1.PNG "Git-webhook-1")
+ <!--
+    -- > There are couple of ways to trigger a jenkins build.
+    M1. (Manually triggering a pipeline.)
+        -- You navigate to Jenkins UI >> Go to the job that you want to trigger. >> Click on build now to trigger jenkins job manually.
+        -- In this project, job name is Test .
+        
+    M2. (Automatically triggering pipeline)
+        -- For this we have done configuration of web-hook on github as well on Jenkins side.
+            - For Jenkins : Navigate to the job name form Jenkins UI >> Click on configure >> Look for trigger & check the box that says i.e.   GitHub hook trigger for GITScm polling >> Next click on save and apply .
+            - For Github : Go to your GitHub repository. >> Click Settings > Webhooks > Add webhook. >> Set the following:
+                -- Payload URL: http://<your-jenkins-url>/github-webhook/
+                -- Content type: application/json
+                -- Which events would you like to trigger this webhook?: Choose "Just the push event".
+                -- Finally save the webhook changes.
+
+ -->
 ## Here we have completed CI part from implementation prospective & we are going to implement CD part .
 
 1. **Install MiniKube** :
