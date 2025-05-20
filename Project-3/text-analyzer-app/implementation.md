@@ -1,4 +1,5 @@
 ## Setting Up Jenkins
+```mermaid
 
 1. **Install Jenkins**:
    - Set up a Jenkins server on an EC2 instance (e.g., t2.large if one is installaing sonarqube as well else if you are skipping sonarqube stage in that case t2.micro is suffice).
