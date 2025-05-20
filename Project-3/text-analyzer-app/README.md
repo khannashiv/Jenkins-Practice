@@ -106,3 +106,25 @@ text-analyzer-app/
 For detailed implementation information, refer to the [Implementation Guide](./implementation.md).
 
 ---
+
+```mermaid
+graph TD
+  User[User]
+  Browser[Web Browser]
+  FlaskApp[Flask App (Python)]
+  Analyzer[Text Analyzer Logic]
+  HTML[HTML Template (index.html)]
+  Docker[Docker Container]
+  Jenkins[Jenkins CI Pipeline]
+  ArgoCD[ArgoCD CD Tool]
+  K8s[Kubernetes (Minikube)]
+
+  User --> Browser
+  Browser -->|HTTP Request| FlaskApp
+  FlaskApp --> HTML
+  FlaskApp --> Analyzer
+
+  FlaskApp -->|Packaged in| Docker
+  Docker -->|Built via| Jenkins
+  Jenkins -->|Push to Repo| ArgoCD
+  ArgoCD -->|Deploys to| K8s
