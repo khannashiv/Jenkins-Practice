@@ -473,7 +473,7 @@ Here we have two stages from a Jenkins declarative pipeline:
         - Commands used are .
             - kubectl get secret
             - kubectl edit secret example-argocd-cluster
-            -  echo <XXXXXX> | base64 -d        # Decode password using base64 conversion.
+            -  echo "<XXXXXX>" | base64 -d        # Decode password using base64 conversion.
             - Finally we will able to login to admin page of ArgoCD.
 
 4. **Final application deployed via ArgoCD**
