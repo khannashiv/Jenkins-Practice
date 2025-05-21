@@ -510,6 +510,6 @@ Here we have two stages from a Jenkins declarative pipeline:
 ---
 
 ## Final Architecture Diagram
- - ![](images/Architecture-diagram-1.PNG "Architecture-1")
+ - ![](images/Architecture-diagram-1.png "Architecture-1")
 
 ---
