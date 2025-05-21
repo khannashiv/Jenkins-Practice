@@ -506,3 +506,10 @@ Here we have two stages from a Jenkins declarative pipeline:
  - ![](images/ArgoCD-10.PNG "ArgoCD-10")
  - ![](images/ArgoCD-11.PNG "ArgoCD-11")
  - ![](images/App-outcome-1.PNG "App-outcome-1")
+
+---
+
+## Final Architecture Diagram
+ - ![](images/Architecture-diagram-1.PNG "Architecture-1")
+
+---
