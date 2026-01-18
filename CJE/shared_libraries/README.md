@@ -1,4 +1,4 @@
-**Concept of Shared Library**
+# Concept of Shared Library
 
 Official Docs :
 - [**Jenkins Shared Libraries**](https://www.jenkins.io/doc/book/pipeline/shared-libraries/)
@@ -7,7 +7,7 @@ Official Docs :
 - [**YouTube Tutorial**](https://www.youtube.com/watch?v=Wj-weFEsTb0)
 
 
-  **Theory**
+## Theory
 
   - Shared library is a collection of Groovy scripts that define reusable functions (steps) for your Jenkins pipeline.
   - This function encapsulates common tasks, making your pipeline more concise and readable.
@@ -20,7 +20,7 @@ Official Docs :
   - Central location can be anything where code related to shared library is stored, in most cases it's a Git repository
 
 
-  **STEPS TO IMPLEMENT SHARED LIBRARY**
+## STEPS TO IMPLEMENT SHARED LIBRARY
 
   - Create an SCM repository for shared code. (explicitly for shared library code.). This keeps it organized & easy to track.
   - Under Jenkins, we will configure global pipeline library here we will provide details like: library name, how Jenkins can
@@ -28,9 +28,12 @@ Official Docs :
   - Then we can write Groovy script defining your reusable function or method within the shared library in the repository. We can think it as building block of the pipeline.
   - Finally within Jenkins file, we will make use of @Library directive (annotation) to load the shared library and call your custom step within your pipeline stage making code more concise & maintainable.
 
-  **Shared library repository structure**
+## Shared library repository structure
 
-    (root)
+<details><summary>Repository Structure</summary>
+
+```
+(root)
     +- src                     # Groovy source files
     |   +- org
     |       +- foo
@@ -42,6 +45,9 @@ Official Docs :
     |   +- org
     |       +- foo
     |           +- bar.json    # static helper data for org.foo.Bar
+```
+
+</details>
 
   - While all the directories are not mandatory but it helps you to organize your code efficiently.
   - src folder is optional directory but it follows standard java project structure & it gets added to classpath when executing jenkins pipeline.
@@ -57,7 +63,7 @@ Official Docs :
 
   - Here in the new branch we will be commenting out most of the stages which we are not going to use going forward.
 
-  **--Practical Implementation--**
+## Practical Implementation
 
   - In order to configure shared libraries the very first step is to configure Global Trusted Pipeline Libraries. For this we need to go to Manage Jenkins >> System >> Look for : Global Trusted Pipeline Libraries  >> Add more details here such as:
 
@@ -96,7 +102,7 @@ Official Docs :
 
 -----------------------------
 
-**Demo: Loading the Shared Library in pipeline**
+## Demo: Loading the Shared Library in pipeline
 
 - In this demo, we have updated Jenkins file to make use of shared library such that at the very top of pipeline we have made use of : @Library('my-shared-library') _
 
@@ -113,7 +119,7 @@ Official Docs :
 
 ----------------------------------
 
-**Demo: Create shared library for Trivy Scan Stage**
+## Demo: Create shared library for Trivy Scan Stage
 
 - So here we are going to create another Groovy file/script under vars folder of same repository i.e.
     [**GitHub Shared Library Repo**](https://github.com/khannashiv/gitea-shared-library-jenkins.git)
@@ -184,15 +190,6 @@ def convertFormat() {
 ```
 
 
-Memory Tip:
-
-Context                                 Syntax              Example
-
-- Groovy variable in shell script         ${var}              sh "echo ${imageName}"
-- Shell variable in shell script          $var or ${var}      sh 'echo $PATH'
-- env variable in shell script            ${env.VAR}          sh "echo ${env.BUILD_URL}"
-- Literal ${...} in shell                 \${...}             sh 'echo \${SHELL_VAR}'
-
 Groovy variables always follow string interpolation (${variable}) when referenced inside shell script blocks, regardless of whether they are:
 
 - Local variables - def myVar = "value"
@@ -228,7 +225,7 @@ sh "echo Short commit: ${env.GIT_COMMIT.substring(0, 7)}"
 
 -------------------------------------------------------------------------------------------------
 
-**Demo: Load Trivy Scan library in Jenkins pipeline**
+## Demo: Load Trivy Scan library in Jenkins pipeline
 
 - In this case make sure we have this option checked i.e. Allow default version to be overridden
 - Update Jenkins file to make use of @Library annotation as : @Library('my-shared-library@feature/TrivyScan') _
@@ -342,13 +339,23 @@ The reason your Slack notification isn't triggering is because the entire pipeli
 org.jenkinsci.plugins.scriptsecurity.sandbox.RejectedAccessException: Scripts not permitted to use method groovy.lang.GroovyObject invokeMethod java.lang.String java.lang.Object (org.jenkinsci.plugins.workflow.cps.CpsClosure2 slackNotification)
 ```
 
-**A:** (No solution provided in the text.)
+**A:** This error occurs when Jenkins' Groovy Sandbox restricts certain method calls on closures (like `slackNotification`) in untrusted or sandboxed environments. To resolve it:
+
+1. **Approve the Script**: Go to **Manage Jenkins > In-process Script Approval**, find the pending signature for the method call, and approve it. This allows the specific operation without compromising overall security.
+   
+2. **Use a Trusted Library**: If this is a shared library, configure it as a **Global Trusted Pipeline Library** in **Manage Jenkins > System > Global Pipeline Libraries**. Trusted libraries run without sandbox restrictions, enabling full Groovy functionality (including `@Grab` for external libraries).
+
+3. **Refactor the Code**: Avoid direct method calls on closures outside `script` blocks in Declarative Pipelines. Wrap the call in a `script {}` block or move it to a trusted library.
+
+4. **Check Permissions**: Ensure the Jenkins user has the necessary permissions, and verify that the library isn't inadvertently set to untrusted mode.
+
+This maintains security while allowing necessary operations. If the issue persists, check Jenkins logs for more details or consult the [**Jenkins Script Security Plugin documentation**](https://plugins.jenkins.io/script-security/).
 
 ```
 
 ----------------------------------- 
 
-**Demo: Shared Library - Library Resources**
+## Demo: Shared Library - Library Resources
 
 - Library resources can store non groovy static assets such as: such as shell script, YAML files in a resources directory. This can be referred & used in shared library.
 
@@ -437,13 +444,12 @@ def call(Map config = [:]) {
     - A resources directory allows the libraryResource step to be used from an external library to load associated non-Groovy files. Currently this feature is not supported for internal libraries.
     - The file is loaded as a string, suitable for passing to certain APIs or saving to a workspace using writeFile.
 
-Summary ....
+## Summary
 
-- First of all we are going to create a file by the name of trivyScanScript.groovy
-- Which calls load script library to load & execute trivy.sh file, it also has an ability to customize image name, severity & exit codes.
-- Next we must have loadScript.groovy file as well, since this is again a separate library which is going to provide generic way to load any scripts from the resources/scripts directory.
-- It loads & prepare Trivy.sh script from resources/ directory basically it's going to write the file onto the workspace & make file executable.
-- Finally actual execution happens at Trivy.sh script which performs vulnerability scan on provided Docker image, severity, exit-codes.
+1. **Create `trivyScanScript.groovy`**: This file calls the load script library to load and execute `trivy.sh`, providing the ability to customize image name, severity, and exit codes.
+2. **Include `loadScript.groovy`**: This separate library offers a generic way to load any scripts from the `resources/scripts` directory.
+3. **Load and Prepare Script**: It loads and prepares the `Trivy.sh` script from the `resources/` directory by writing the file to the jenkins workspace and making it executable.
+4. **Execute Vulnerability Scan**: The actual execution occurs in the `Trivy.sh` script, performing a vulnerability scan on the provided Docker image with specified severity and exit codes.
 
 
 Error 1 .
