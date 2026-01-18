@@ -93,7 +93,7 @@ The Job Restrictions Plugin restricts job execution on nodes to enhance security
 1. Install the plugin.
 2. Go to **Manage Jenkins** > **Nodes** > **Built-in Node** > **Configure**.
 3. Enable "Restrict job execution at node level".
-4. Add restriction: Regular Expression for job name (e.g., `NodeJS-.*`).
+4. Add restriction: Regular Expression for job name (e.g., `NodeJS-.*` will run jobs starting with "NodeJS" while no other jobs will run).
 5. Test: `NodeJS-NPM-version-test` runs; others (e.g., `String-Interpolation-Demo`) pend.
 6. Add OR condition: `NodeJS.*` OR started by user4.
 7. Now, jobs starting with "NodeJS" or triggered by user4 run.

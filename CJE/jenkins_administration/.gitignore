@@ -1,0 +1,5 @@
+# Sensitive files containing tokens, keys, or credentials
+*.env
+secrets.txt
+config/secrets.json
+# Add any files with sensitive Slack tokens or API keys here
