@@ -215,6 +215,17 @@ pipeline {
 - HashiCorp Vault integration
 - Environment variable encryption
 
+**Pod Lifecycle**:
+┌─────────────────────────────────────────────────┐
+│ Pipeline Start → Pod Created → MongoDB Init     │
+│       ↓                                         │
+│  Credentials: testUser/testPass (in-memory)     │
+│       ↓                                         │
+│  Pipeline Tests Run (connects via localhost)    │
+│       ↓                                         │
+│  Pipeline Complete → Pod Destroyed → ALL GONE   │
+└─────────────────────────────────────────────────┘
+
 ## Pipeline Syntax Tool
 The agent configuration was generated using Jenkins' **Directive Generator** available in the pipeline syntax helper, ensuring proper YAML structure and syntax.
 
@@ -232,3 +243,4 @@ The agent configuration was generated using Jenkins' **Directive Generator** ava
 - Official Jenkins Kubernetes Plugin Documentation: https://plugins.jenkins.io/kubernetes/
 - Jenkins Pipeline Syntax: https://www.jenkins.io/doc/book/pipeline/syntax/
 - Gitea repository holding source code [`Actual code`]: https://gitea.com/my-demo-active-org/solar-system-migrate/src/branch/feature/k8s-agent/
+
